@@ -1,0 +1,50 @@
+# Edge reverse proxy for UniNotes.
+#
+#   https://YOUR_DOMAIN/        -> frontend:8080  (static SPA)
+#   https://YOUR_DOMAIN/api/*   -> backend:3000   (/api prefix preserved)
+#
+# UNINOTES_SITE_ADDRESS controls the mode (see .env.example):
+#   notes.example.com  -> Caddy obtains and renews a TLS certificate automatically (needs ports 80/443)
+#   :80                -> plain HTTP, for running behind an existing reverse proxy that terminates TLS
+{
+	admin off
+	servers {
+		# Trust X-Forwarded-For only from configured proxies (an existing VPS proxy, if any).
+		trusted_proxies static {$UNINOTES_TRUSTED_PROXIES:private_ranges}
+		client_ip_headers X-Forwarded-For
+	}
+	log {
+		output stdout
+		format json
+		level INFO
+	}
+}
+
+{$UNINOTES_SITE_ADDRESS:localhost} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		-Server
+		-Via
+	}
+
+	# Upper bound for request bodies (largest upload limit + multipart overhead).
+	request_body {
+		max_size 40MB
+	}
+
+	handle /api/* {
+		reverse_proxy backend:3000 {
+			# Retry briefly while the backend restarts (e.g. during a backend-only redeploy).
+			lb_try_duration 15s
+			lb_try_interval 500ms
+		}
+	}
+
+	handle {
+		reverse_proxy frontend:8080 {
+			lb_try_duration 10s
+		}
+	}
+}

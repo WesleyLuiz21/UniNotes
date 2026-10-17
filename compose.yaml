@@ -1,0 +1,139 @@
+# UniNotes — production stack. Run all commands from this directory.
+#   docker compose up -d --build            build and start everything
+#   docker compose up -d --build backend    rebuild/redeploy one service
+#   docker compose logs -f backend
+# Persistent data lives in named volumes; `docker compose down` never deletes them.
+# Never use `down -v` unless you intend to destroy all notes.
+
+name: ${COMPOSE_PROJECT_NAME:-uninotes}
+
+x-hardening: &hardening
+  read_only: true
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "5"
+
+services:
+  backend:
+    <<: *hardening
+    build:
+      context: ./Backend
+    image: ${COMPOSE_PROJECT_NAME:-uninotes}-backend:latest
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+      PORT: "3000"
+      APP_ORIGIN: ${UNINOTES_ORIGIN:?Set UNINOTES_ORIGIN in .env}
+      APP_SECRET_KEY: ${APP_SECRET_KEY:?Set APP_SECRET_KEY in .env}
+      COOKIE_SECURE: ${UNINOTES_COOKIE_SECURE:-true}
+      # Only the edge Caddy (on the private network) may set X-Forwarded-For.
+      TRUST_PROXY: uniquelocal
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      SESSION_IDLE_DAYS: ${SESSION_IDLE_DAYS:-7}
+      SESSION_ABSOLUTE_DAYS: ${SESSION_ABSOLUTE_DAYS:-30}
+      MAX_IMAGE_MB: ${MAX_IMAGE_MB:-10}
+      MAX_ATTACHMENT_MB: ${MAX_ATTACHMENT_MB:-25}
+      MAX_IMPORT_MB: ${MAX_IMPORT_MB:-2}
+      VERSION_RETENTION: ${VERSION_RETENTION:-100}
+      RECYCLE_BIN_RETENTION_DAYS: ${RECYCLE_BIN_RETENTION_DAYS:-0}
+      LOCAL_BACKUP_KEEP: ${LOCAL_BACKUP_KEEP:-7}
+      MIGRATE_ON_START: "false"
+    volumes:
+      - db:/data/db
+      - attachments:/data/attachments
+      - backups:/data/backups
+    tmpfs:
+      - /tmp:size=64m
+    networks: [internal]
+    # No published ports: reachable only through the reverse proxy.
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+
+  frontend:
+    <<: *hardening
+    build:
+      context: ./Frontend
+    image: ${COMPOSE_PROJECT_NAME:-uninotes}-frontend:latest
+    tmpfs:
+      - /tmp:size=16m,uid=65534,gid=65534
+    networks: [internal]
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.5"
+
+  caddy:
+    <<: *hardening
+    image: caddy:2.10-alpine
+    cap_add:
+      - NET_BIND_SERVICE
+    depends_on:
+      backend:
+        condition: service_healthy
+      frontend:
+        condition: service_healthy
+    environment:
+      UNINOTES_SITE_ADDRESS: ${UNINOTES_SITE_ADDRESS:-localhost}
+      UNINOTES_TRUSTED_PROXIES: ${UNINOTES_TRUSTED_PROXIES:-private_ranges}
+    ports:
+      - "${UNINOTES_HTTP_BIND:-0.0.0.0}:${UNINOTES_HTTP_PORT:-80}:80"
+      - "${UNINOTES_HTTPS_BIND:-0.0.0.0}:${UNINOTES_HTTPS_PORT:-443}:443"
+      - "${UNINOTES_HTTPS_BIND:-0.0.0.0}:${UNINOTES_HTTPS_PORT:-443}:443/udp"
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    tmpfs:
+      - /tmp:size=16m
+    networks: [internal, edge]
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  # Offsite encrypted backups. Not started by `up`; used by scripts/backup.sh and restore.sh.
+  restic:
+    image: restic/restic:0.18.1
+    profiles: [tools]
+    entrypoint: ["restic"]
+    environment:
+      RESTIC_REPOSITORY: ${RESTIC_REPOSITORY:-}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
+      B2_ACCOUNT_ID: ${B2_ACCOUNT_ID:-}
+      B2_ACCOUNT_KEY: ${B2_ACCOUNT_KEY:-}
+      RESTIC_CACHE_DIR: /cache
+    hostname: ${COMPOSE_PROJECT_NAME:-uninotes}
+    volumes:
+      - backups:/backups
+      - restic_cache:/cache
+      - ${RESTIC_LOCAL_REPO_DIR:-./restic-repo}:/repo
+    security_opt:
+      - no-new-privileges:true
+    networks: [edge]
+
+volumes:
+  db:
+  attachments:
+  backups:
+  caddy_data:
+  caddy_config:
+  restic_cache:
+
+networks:
+  internal:
+    internal: true
+  edge: {}

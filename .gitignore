@@ -1,0 +1,17 @@
+# Secrets and local data — never commit
+.env
+.env.*
+!.env.example
+restic-repo/
+data/
+*.db
+*.db-wal
+*.db-shm
+
+node_modules/
+dist/
+coverage/
+playwright-report/
+test-results/
+.vscode/
+.DS_Store
