@@ -39,6 +39,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     throw new Error(`Invalid backend configuration:\n${issues}`);
   }
   const e = parsed.data;
+  if (e.NODE_ENV === 'production') assertStrongSecret(e.APP_SECRET_KEY);
   const dataDir = path.resolve(e.DATA_DIR);
   const cookieSecure = e.COOKIE_SECURE ?? e.NODE_ENV === 'production';
   const origin = new URL(e.APP_ORIGIN).origin;
@@ -81,4 +82,17 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
       intervalMs: e.VERSION_INTERVAL_MINUTES * 60_000,
     },
   };
+}
+
+/**
+ * In production, refuse placeholder or low-entropy secrets. APP_SECRET_KEY encrypts MFA secrets
+ * and keys recovery-code hashes, so a guessable value would undermine both.
+ */
+export function assertStrongSecret(secret: string) {
+  if (/change-?me|example|placeholder|your[-_]?secret|^secret|test-secret/i.test(secret)) {
+    throw new Error('APP_SECRET_KEY is a placeholder value. Generate one with: openssl rand -base64 48');
+  }
+  if (new Set(secret).size < 16) {
+    throw new Error('APP_SECRET_KEY has too little entropy. Generate one with: openssl rand -base64 48');
+  }
 }

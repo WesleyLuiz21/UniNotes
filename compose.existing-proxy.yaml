@@ -1,0 +1,29 @@
+# Option C — run UniNotes behind an EXISTING containerised reverse proxy (Traefik, nginx,
+# nginx-proxy, Caddy…) that already owns ports 80/443 on this host.
+#
+# UniNotes' Caddy publishes no host ports; instead it joins the existing proxy's Docker network
+# so that proxy can forward https://<your UniNotes domain> to http://uninotes-edge:80.
+# Nothing in the other application's compose project is modified.
+#
+#   docker compose -f compose.yaml -f compose.existing-proxy.yaml up -d
+#   (or set COMPOSE_FILE=compose.yaml:compose.existing-proxy.yaml in .env so scripts use it too)
+#
+# .env for this mode:
+#   UNINOTES_SITE_ADDRESS=:80
+#   UNINOTES_PROXY_NETWORK=<name of the existing proxy's network, see `docker network ls`>
+#   UNINOTES_TRUSTED_PROXIES=<that network's subnet, see `docker network inspect <name>`>
+#   UNINOTES_ORIGIN=https://notes.example.com
+services:
+  caddy:
+    ports: !reset []
+    networks:
+      internal: {}
+      edge: {}
+      existing_proxy:
+        aliases:
+          - ${COMPOSE_PROJECT_NAME:-uninotes}-edge
+
+networks:
+  existing_proxy:
+    external: true
+    name: ${UNINOTES_PROXY_NETWORK:?Set UNINOTES_PROXY_NETWORK to the existing proxy's Docker network}

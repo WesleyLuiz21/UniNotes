@@ -39,7 +39,7 @@ Status of each control in V1, where it is implemented, and how it is verified. T
 
 Rate limits and the audit log depend on the client IP, so it must not be spoofable:
 
-- The edge Caddy trusts nobody's `X-Forwarded-For` by default (`UNINOTES_TRUSTED_PROXIES=127.0.0.1/32`). It **replaces** the header with the IP it determined (`header_up X-Forwarded-For {client_ip}`).
+- The edge Caddy trusts nobody's `X-Forwarded-For` by default (`UNINOTES_TRUSTED_PROXIES=127.0.0.1/32`). With `trusted_proxies_strict` it parses the header right-to-left, skipping only trusted proxies, so an appending upstream proxy cannot be abused. It then **replaces** the header with the IP it determined (`header_up X-Forwarded-For {client_ip}`).
 - The backend trusts exactly **one** proxy hop (`TRUST_PROXY=1`), so it reads that value and nothing else.
 - Behind an existing proxy (Option B), list only that proxy's address in `UNINOTES_TRUSTED_PROXIES`.
 
@@ -106,10 +106,11 @@ No inline scripts (the theme bootstrap is an external file), no `eval`, and no r
 
 ## Secrets and operations
 
+- In production the backend refuses placeholder or low-entropy `APP_SECRET_KEY` values.
 - `.env` holds placeholders in the template only, and is git-ignored. `deploy.sh` warns if it is not `chmod 600`.
 - Logs redact cookies, authorisation and CSRF headers, passwords, codes, tokens and secrets.
 - Backups contain no sessions and no plaintext secrets. The offsite copy is encrypted by restic, and backups are verified with checksums.
-- Containers run as non-root with a read-only root filesystem, `cap_drop: ALL`, `no-new-privileges`, resource limits and internal-only networks. Only the reverse proxy publishes ports.
+- All three containers run as non-root (backend uid 1000, frontend 65534, Caddy 1001) with a read-only root filesystem, `cap_drop: ALL` and **no added capabilities**, plus `no-new-privileges`, resource limits and internal-only networks. Caddy binds 80/443 through the namespaced sysctl `net.ipv4.ip_unprivileged_port_start=0`. Only the reverse proxy publishes ports.
 - `npm audit --omit=dev` reports 0 vulnerabilities for both packages. CI runs it on every push. A transitive `katex` advisory (GHSA-238p-pmpm-9mq7) is resolved with an npm override to KaTeX 0.19.
 
 ## Recommendations for the operator

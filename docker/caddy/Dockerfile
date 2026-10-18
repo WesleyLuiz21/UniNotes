@@ -12,5 +12,10 @@ RUN xcaddy build ${CADDY_VERSION} --replace golang.org/x/net=golang.org/x/net@v0
 
 FROM caddy:2.11-alpine
 COPY --from=build /out/caddy /usr/bin/caddy
-# Allow binding :80/:443 as the default user with only NET_BIND_SERVICE (see compose.yaml).
-RUN apk add --no-cache libcap && setcap cap_net_bind_service=+ep /usr/bin/caddy && apk del libcap && caddy version
+# Run unprivileged. Ports 80/443 are bound via the namespaced sysctl
+# net.ipv4.ip_unprivileged_port_start=0 (compose.yaml), so no capabilities are needed at all.
+# Named volumes mounted on /data and /config inherit this ownership on first use.
+RUN mkdir -p /data/caddy /config/caddy \
+ && chown -R 1001:1001 /data /config \
+ && caddy version
+USER 1001:1001

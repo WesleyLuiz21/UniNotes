@@ -12,6 +12,9 @@
 		# Whose X-Forwarded-For to believe. Default (127.0.0.1/32) = nobody, which is correct when
 		# this Caddy faces the internet directly. Only widen it behind an existing proxy (Option B).
 		trusted_proxies static {$UNINOTES_TRUSTED_PROXIES:127.0.0.1/32}
+		# Read X-Forwarded-For right-to-left, skipping only trusted proxies. Without this Caddy takes
+		# the LEFTMOST entry, which a client can forge whenever an upstream proxy appends to the header.
+		trusted_proxies_strict
 		client_ip_headers X-Forwarded-For
 		# Slow-client (slowloris) protection.
 		timeouts {

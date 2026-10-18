@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SecretBox } from '../src/lib/crypto.js';
+import { loadConfig } from '../src/config.js';
 import { contentDisposition, exportAssetName, sanitizeOriginalName, slugify } from '../src/lib/filenames.js';
 import { isValidDateOnly } from '../src/lib/time.js';
 import { base32Decode, base32Encode, hotp, totp, verifyTotp } from '../src/lib/totp.js';
@@ -103,5 +104,21 @@ describe('excerpt', () => {
     expect(excerpt('# Title\n\n**Bold** and [link](http://x) ![img](y)\n```js\ncode\n```')).toBe(
       'Title Bold and link',
     );
+  });
+});
+
+describe('production secret validation', () => {
+  const load = (k: string) => () =>
+    loadConfig({
+      NODE_ENV: 'production',
+      APP_SECRET_KEY: k,
+      APP_ORIGIN: 'https://n.example.com',
+    } as NodeJS.ProcessEnv);
+  it('rejects placeholders and low-entropy keys', () => {
+    expect(load('change-me-generate-with-openssl-rand-base64-32')).toThrow(/placeholder/);
+    expect(load('a'.repeat(40))).toThrow(/entropy/);
+  });
+  it('accepts a generated key', () => {
+    expect(load('q3L7v0bS9xR2mK8pZ4wY1cN6tH5jD0fGaE3uB7iO2lQ9sV4=')).not.toThrow();
   });
 });

@@ -128,13 +128,11 @@ test.describe('signed in', () => {
   test('10. import a Markdown file', async ({ page }) => {
     await page.getByRole('button', { name: 'Import Markdown' }).click();
     const dialog = page.getByRole('dialog');
-    await dialog
-      .getByLabel('Markdown file')
-      .setInputFiles({
-        name: 'week-7.md',
-        mimeType: 'text/markdown',
-        buffer: Buffer.from('# Entanglement\n\nSpooky action at a distance.\n'),
-      });
+    await dialog.getByLabel('Markdown file').setInputFiles({
+      name: 'week-7.md',
+      mimeType: 'text/markdown',
+      buffer: Buffer.from('# Entanglement\n\nSpooky action at a distance.\n'),
+    });
     await expect(dialog.getByLabel('Title')).toHaveValue('Entanglement');
     await expect(dialog.getByRole('heading', { name: 'Entanglement' })).toBeVisible();
     await dialog.getByLabel('Lecture date').fill('2025-01-20');

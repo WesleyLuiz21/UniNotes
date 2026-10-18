@@ -131,21 +131,24 @@ CI (`.github/workflows/ci.yml`) runs formatting, lint, typecheck, unit tests, th
 # 1. Get the code
 git clone <your-repo-url> UniNotes && cd UniNotes
 
-# 2. Configure
+# 2. On a server that already runs other apps: read-only check of ports, proxies and names
+./scripts/preflight.sh         # changes nothing; tells you whether to use Option A, B or C
+
+# 3. Configure
 cp .env.example .env && chmod 600 .env
 openssl rand -base64 48        # paste the output as APP_SECRET_KEY in .env
 nano .env                      # set UNINOTES_ORIGIN, UNINOTES_SITE_ADDRESS, proxy mode, backups
 
-# 3. Build, migrate and start
+# 4. Build, migrate and start
 ./scripts/deploy.sh
 
-# 4. Create your account (prompts for username, email and password)
+# 5. Create your account (prompts for username, email and password)
 docker compose run --rm -it backend node dist/scripts/create-user.js
 
-# 5. Open UNINOTES_ORIGIN in a browser and sign in.
+# 6. Open UNINOTES_ORIGIN in a browser and sign in.
 #    Then enable two-factor authentication: Settings → Security.
 
-# 6. Schedule backups (see "Backups")
+# 7. Schedule backups (see "Backups")
 ```
 
 `deploy.sh` validates `.env`, builds the images, takes a verified backup if a database already exists, applies migrations explicitly, starts the stack, and waits for health checks.
@@ -288,6 +291,41 @@ server {
 ```
 
 Existing Caddy: `notes.example.com { reverse_proxy 127.0.0.1:8088 }`. With Traefik, route the host to `http://127.0.0.1:8088` with a file-provider service.
+
+Option B requires the existing proxy to run **on the host** (installed with apt, for example). A proxy that runs in a **container** cannot reach the host's `127.0.0.1`; use Option C instead.
+
+### Option C: an existing *containerised* reverse proxy owns 80/443
+
+UniNotes publishes **no host ports**. Its Caddy joins the existing proxy's Docker network under the alias `<COMPOSE_PROJECT_NAME>-edge`, and you add one route for the UniNotes domain to that proxy. The other application's compose project, containers and volumes are not touched.
+
+```dotenv
+COMPOSE_FILE=compose.yaml:compose.existing-proxy.yaml
+UNINOTES_ORIGIN=https://notes.example.com
+UNINOTES_SITE_ADDRESS=:80
+UNINOTES_PROXY_NETWORK=<network of the existing proxy>      # docker network ls
+UNINOTES_TRUSTED_PROXIES=<subnet of that network>           # docker network inspect <name>
+```
+
+Route to add in the existing proxy (nginx example; the TLS settings are the ones it already uses):
+
+```nginx
+server {
+    listen 443 ssl; server_name notes.example.com;
+    client_max_body_size 40m;
+    location / {
+        resolver 127.0.0.11 valid=10s;
+        set $uninotes http://uninotes-edge:80;     # <COMPOSE_PROJECT_NAME>-edge
+        proxy_pass $uninotes;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto https;
+    }
+}
+```
+
+For Traefik, add labels to the `caddy` service in `compose.existing-proxy.yaml`: a router for your host, and a service on port 80.
+
+**Client IPs behind any proxy.** Caddy uses `trusted_proxies_strict`: it reads `X-Forwarded-For` right-to-left and skips only `UNINOTES_TRUSTED_PROXIES`. Visitors therefore cannot forge their IP, even when the outer proxy appends to the header. List *only* your proxy's address or network there.
 
 The UniNotes containers use project-prefixed names and their own networks, so they won't collide with other stacks. Nothing in this repository modifies existing proxy or Docker configuration.
 

@@ -9,6 +9,14 @@ permissions:
   contents: read
 
 jobs:
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Secret scan (full history)
+        run: docker run --rm -v "$PWD":/repo zricethezav/gitleaks:v8.28.0 git /repo --no-banner
+
   backend:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: Backend } }

@@ -18,6 +18,8 @@ export default defineConfig({
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     permissions: ['clipboard-read', 'clipboard-write'],
+    // For HTTPS test deployments using a local/internal CA (never needed against a real certificate).
+    ignoreHTTPSErrors: process.env.E2E_IGNORE_HTTPS_ERRORS === '1',
   },
   projects: [
     {

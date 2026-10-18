@@ -78,8 +78,10 @@ services:
     build:
       context: ./docker/caddy
     image: ${COMPOSE_PROJECT_NAME:-uninotes}-caddy:latest
-    cap_add:
-      - NET_BIND_SERVICE
+    # Non-root Caddy binds 80/443 through this per-container (network-namespaced) sysctl instead
+    # of holding CAP_NET_BIND_SERVICE.
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: 0
     depends_on:
       backend:
         condition: service_healthy

@@ -29,8 +29,8 @@ notify() {
 }
 
 wait_healthy() {
-  local svc="$1" i cid status
-  for i in $(seq 1 60); do
+  local svc="$1" cid status
+  for _ in $(seq 1 60); do
     cid="$(dc ps -q "$svc")"
     status="$(docker inspect -f '{{.State.Health.Status}}' "$cid" 2>/dev/null || echo starting)"
     [[ "$status" == healthy ]] && { log "$svc is healthy"; return 0; }
