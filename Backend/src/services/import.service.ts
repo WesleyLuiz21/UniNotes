@@ -58,8 +58,16 @@ export function splitUniNotesFrontMatter(text: string): { body: string; meta: Fr
 }
 
 export function inferTitle(body: string, filename: string): string {
-  const h1 = /^#\s+(.+?)\s*#*\s*$/m.exec(body);
-  if (h1?.[1]) return h1[1].trim().slice(0, 300);
+  // Plain string scanning, not a regex: the previous pattern backtracked catastrophically on long
+  // lines of whitespace (a 5 KB file blocked the event loop for minutes).
+  for (const raw of body.split('\n', 2000)) {
+    if (raw.startsWith('# ') || raw.startsWith('#\t')) {
+      let title = raw.slice(2).trim();
+      while (title.endsWith('#')) title = title.slice(0, -1);
+      title = title.trim().slice(0, 300);
+      if (title) return title;
+    }
+  }
   const stem = path.parse(filename).name.replace(/[_-]+/g, ' ').trim();
   return stem.slice(0, 300) || 'Imported note';
 }

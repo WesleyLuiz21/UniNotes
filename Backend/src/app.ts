@@ -3,6 +3,7 @@ import { pinoHttp } from 'pino-http';
 import type { AppContext } from './context.js';
 import { loadSession } from './middleware/auth.js';
 import { csrfProtection } from './middleware/csrf.js';
+import { anonymousApiLimit } from './middleware/rate-limit.js';
 import { errorHandler, notFoundHandler } from './middleware/errors.js';
 import { apiSecurityHeaders, noStore } from './middleware/security.js';
 import { attachmentRoutes } from './routes/attachments.routes.js';
@@ -44,8 +45,12 @@ export function createApp(ctx: AppContext) {
   app.use('/api', noStore);
   // No CORS headers are emitted: the frontend is same-origin (proxy in dev and production),
   // so browsers block cross-origin reads by default.
-  app.use(express.json({ limit: ctx.config.limits.jsonBody, strict: true }));
   app.use(loadSession(ctx));
+  // Anonymous clients can only reach login-type endpoints, so they get a tiny body limit.
+  const jsonSignedIn = express.json({ limit: ctx.config.limits.jsonBody, strict: true });
+  const jsonAnonymous = express.json({ limit: '16kb', strict: true });
+  app.use((req, res, next) => (req.auth ? jsonSignedIn : jsonAnonymous)(req, res, next));
+  app.use('/api', anonymousApiLimit());
   app.use('/api', csrfProtection(ctx));
 
   app.use(healthRoutes(ctx));

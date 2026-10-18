@@ -64,3 +64,10 @@ jobs:
       - uses: actions/checkout@v4
       - run: docker build -t uninotes-backend Backend
       - run: docker build -t uninotes-frontend Frontend
+      - run: docker build -t uninotes-caddy docker/caddy
+      - name: Image vulnerability scan (fails on fixable HIGH/CRITICAL)
+        run: |
+          for i in uninotes-backend uninotes-frontend uninotes-caddy; do
+            docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.67.2 image \
+              --quiet --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 $i
+          done

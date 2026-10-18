@@ -7,6 +7,7 @@ import { migrationStatus, runMigrations } from './db/migrations.js';
 import { createLogger } from './logger.js';
 import { purgeExpiredSessions } from './services/session.service.js';
 import { purgeRecycleBin } from './services/notes.service.js';
+import { pruneAuditEvents } from './services/audit.service.js';
 
 const config = loadConfig();
 const logger = createLogger(config.logLevel);
@@ -22,7 +23,7 @@ if (status.pending.length > 0) {
   } else {
     logger.fatal(
       { pending: status.pending },
-      'Database has pending migrations. Back up, then run: docker compose run --rm backend npm run db:migrate:prod',
+      'Database has pending migrations. Back up, then run: docker compose run --rm backend node dist/scripts/migrate.js',
     );
     process.exit(1);
   }
@@ -41,6 +42,7 @@ const maintenance = () => {
   try {
     purgeExpiredSessions(ctx);
     purgeRecycleBin(ctx);
+    pruneAuditEvents(db);
     db.$client.pragma('wal_checkpoint(PASSIVE)');
   } catch (err) {
     logger.error({ err }, 'Maintenance task failed');

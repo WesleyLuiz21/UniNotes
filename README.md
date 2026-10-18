@@ -10,7 +10,7 @@ A private, self-hosted, Markdown-first notes app for university lectures. Organi
 
 More documentation:
 
-- [docs/SECURITY.md](docs/SECURITY.md): the security checklist and threat model
+- [docs/SECURITY.md](docs/SECURITY.md): the security checklist, threat model, **pre-launch checklist** and penetration-test results
 - [docs/API.md](docs/API.md): the REST API guide. The full contract is in [Backend/openapi.json](Backend/openapi.json).
 - [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md): architecture, design decisions and data policies
 
@@ -154,7 +154,7 @@ docker compose run --rm -it backend node dist/scripts/create-user.js
 
 | Service | Image | Exposed | Notes |
 |---|---|---|---|
-| `caddy` | `caddy:2.10-alpine` | 80/443 (configurable bind address and ports) | TLS, HSTS, routes `/api/*` → backend and everything else → frontend |
+| `caddy` | built from `docker/caddy/` (Caddy 2.11.7, patched Go) | 80/443 (configurable bind address and ports) | TLS, HSTS, routes `/api/*` → backend and everything else → frontend |
 | `frontend` | built from `Frontend/` | internal network only | static SPA on an unprivileged Caddy (port 8080), with CSP and security headers |
 | `backend` | built from `Backend/` | internal network only | Express API with embedded SQLite (no separate DB container) |
 | `restic` | `restic/restic:0.18.1` | none | runs on demand (`tools` profile) |
@@ -188,7 +188,7 @@ Root `.env` (read by Docker Compose; full annotated template in [.env.example](.
 | `UNINOTES_SITE_ADDRESS` | | Caddy site address: a domain (automatic HTTPS) or `:80` (behind another proxy). |
 | `UNINOTES_HTTP_BIND` / `UNINOTES_HTTP_PORT` | | Host bind address and port for HTTP (default `0.0.0.0:80`). |
 | `UNINOTES_HTTPS_BIND` / `UNINOTES_HTTPS_PORT` | | Host bind address and port for HTTPS (default `0.0.0.0:443`). |
-| `UNINOTES_TRUSTED_PROXIES` | | CIDRs allowed to set `X-Forwarded-For` for Caddy (default `private_ranges`). |
+| `UNINOTES_TRUSTED_PROXIES` | | CIDRs whose `X-Forwarded-For` Caddy believes. Default `127.0.0.1/32` = nobody (correct when Caddy faces the internet). Widen only behind an existing proxy (Option B). |
 | `UNINOTES_COOKIE_SECURE` | | `true` (default). Only set `false` for plain-HTTP testing on a non-localhost host. |
 | `SESSION_IDLE_DAYS` / `SESSION_ABSOLUTE_DAYS` | | Session lifetimes (default 7 / 30). |
 | `MAX_IMAGE_MB` / `MAX_ATTACHMENT_MB` / `MAX_IMPORT_MB` | | Upload limits (default 10 / 25 / 2). |
@@ -267,7 +267,7 @@ UNINOTES_HTTP_BIND=127.0.0.1
 UNINOTES_HTTP_PORT=8088
 UNINOTES_HTTPS_BIND=127.0.0.1
 UNINOTES_HTTPS_PORT=8443
-UNINOTES_TRUSTED_PROXIES=127.0.0.1/32 172.16.0.0/12
+UNINOTES_TRUSTED_PROXIES=172.16.0.0/12
 ```
 
 nginx example:

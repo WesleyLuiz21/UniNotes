@@ -1,7 +1,7 @@
 /**
  * Apply database migrations explicitly.
  *   npm run db:migrate            (development, via tsx)
- *   node dist/scripts/migrate.js  (production container: `docker compose run --rm backend npm run db:migrate:prod`)
+ *   node dist/scripts/migrate.js  (production container: `docker compose run --rm backend node dist/scripts/migrate.js`)
  * Options: --status (report only), --no-backup (skip the automatic pre-migration snapshot)
  */
 import fs from 'node:fs';

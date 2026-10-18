@@ -49,7 +49,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env) {
     host: e.HOST,
     origin,
     secretKey: e.APP_SECRET_KEY,
-    trustProxy: e.TRUST_PROXY,
+    // A number means "trust exactly N proxy hops" (production: 1 = the edge Caddy).
+    trustProxy: /^\d+$/.test(e.TRUST_PROXY.trim()) ? Number(e.TRUST_PROXY) : e.TRUST_PROXY,
     logLevel: e.LOG_LEVEL,
     migrateOnStart: e.MIGRATE_ON_START,
     paths: {

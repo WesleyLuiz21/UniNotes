@@ -80,8 +80,9 @@ export function attachmentRoutes(ctx: AppContext) {
       const file = storagePath(ctx, a.storageKey);
       if (!fs.existsSync(file)) throw notFound('Attachment');
       const etag = `"${a.sha256.slice(0, 32)}"`;
-      // Private (browser-only) caching; content for an id never changes.
-      res.setHeader('Cache-Control', 'private, max-age=86400');
+      // Revalidate on every use (cheap 304 via ETag) so private images are not served from the
+      // browser cache after sign-out on a shared computer.
+      res.setHeader('Cache-Control', 'private, no-cache');
       res.setHeader('ETag', etag);
       if (req.headers['if-none-match'] === etag) {
         res.status(304).end();

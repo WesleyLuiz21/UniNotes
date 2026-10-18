@@ -17,7 +17,10 @@ const IMAGE_TYPES = new Map([
   ['image/webp', 'webp'],
 ] as const);
 const MAX_IMAGE_DIMENSION = 4096;
-const MAX_INPUT_PIXELS = 60_000_000; // decompression-bomb guard
+const MAX_INPUT_PIXELS = 40_000_000; // decompression-bomb guard
+// Keep libvips memory bounded: no operation cache, one image at a time per call.
+sharp.cache(false);
+sharp.concurrency(1);
 
 export const attachmentUrl = (id: string) => `/api/attachments/${id}/content`;
 

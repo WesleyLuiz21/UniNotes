@@ -4,7 +4,7 @@ import type { AppContext } from '../context.js';
 import { ApiError } from '../lib/errors.js';
 import { burnPasswordCheck, verifyPassword } from '../lib/password.js';
 import { defineRoute } from '../lib/route.js';
-import { AccountLockout, loginRateLimit, mfaRateLimit } from '../middleware/rate-limit.js';
+import { LoginThrottle, loginRateLimit, MfaAttempts, mfaRateLimit } from '../middleware/rate-limit.js';
 import { audit } from '../services/audit.service.js';
 import { verifySecondFactor } from '../services/mfa.service.js';
 import {
@@ -41,7 +41,8 @@ const INVALID_CREDENTIALS = new ApiError(401, 'INVALID_CREDENTIALS', 'Incorrect 
 export function authRoutes(ctx: AppContext) {
   const router = Router();
   const p = '/api/auth';
-  const lockout = new AccountLockout(ctx.config.limits.loginPerWindow);
+  const throttle = new LoginThrottle(ctx.config.limits.loginPerWindow);
+  const mfaAttempts = new MfaAttempts();
 
   defineRoute(router, p, {
     method: 'get',
@@ -73,23 +74,26 @@ export function authRoutes(ctx: AppContext) {
     response: SessionStateSchema,
     handler: async ({ req, res, body }) => {
       const key = normaliseIdentifier(body.identifier);
-      if (lockout.isLocked(key)) {
+      const ip = req.ip ?? 'unknown';
+      if (throttle.isBlocked(ip, key)) {
         throw new ApiError(
           429,
           'RATE_LIMITED',
           'Too many attempts. Please wait a few minutes and try again.',
         );
       }
+      const delay = throttle.delayMs(key);
+      if (delay) await new Promise((r) => setTimeout(r, delay));
       const user = findUserByIdentifier(ctx.db, body.identifier);
       const valid = user
         ? await verifyPassword(user.passwordHash, body.password)
         : (await burnPasswordCheck(body.password), false);
       if (!user || !valid) {
-        lockout.recordFailure(key);
+        throttle.recordFailure(ip, key);
         audit(ctx.db, req, user?.id ?? null, 'auth.login.failure', { reason: 'credentials' });
         throw INVALID_CREDENTIALS;
       }
-      lockout.reset(key);
+      throttle.recordSuccess(ip, key);
 
       // Session fixation defence: always drop any existing session and mint a new token.
       if (req.auth) revokeSession(ctx, req.auth.session.id, req.auth.user.id);
@@ -120,8 +124,15 @@ export function authRoutes(ctx: AppContext) {
       const method = verifySecondFactor(ctx, user, body.code);
       if (!method) {
         audit(ctx.db, req, user.id, 'auth.mfa.failure');
+        // Too many wrong codes: discard the half-finished sign-in; the password is needed again.
+        if (mfaAttempts.fail(auth.session.id)) {
+          revokeSession(ctx, auth.session.id, user.id);
+          clearSessionCookie(ctx, res);
+          throw new ApiError(401, 'MFA_ATTEMPTS_EXCEEDED', 'Too many incorrect codes. Please sign in again.');
+        }
         throw new ApiError(401, 'INVALID_MFA_CODE', 'That code is not valid');
       }
+      mfaAttempts.clear(auth.session.id);
       // Privilege change: replace the pending session with a fresh active one.
       revokeSession(ctx, auth.session.id, user.id);
       const session = createSession(ctx, req, res, user.id, 'active');
@@ -141,6 +152,7 @@ export function authRoutes(ctx: AppContext) {
     handler: ({ req, res, auth }) => {
       revokeSession(ctx, auth.session.id, auth.user.id);
       clearSessionCookie(ctx, res);
+      res.setHeader('Clear-Site-Data', '"cache"');
       audit(ctx.db, req, auth.user.id, 'auth.logout');
     },
   });
@@ -154,6 +166,7 @@ export function authRoutes(ctx: AppContext) {
     handler: ({ req, res, auth }) => {
       const count = revokeAllSessions(ctx, auth.user.id);
       clearSessionCookie(ctx, res);
+      res.setHeader('Clear-Site-Data', '"cache"');
       audit(ctx.db, req, auth.user.id, 'auth.logout_all', { revoked: count });
     },
   });

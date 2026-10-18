@@ -39,35 +39,97 @@ export const sensitiveRateLimit = () =>
     message: tooMany,
   });
 
-/**
- * Per-account failure counter so a distributed attacker cannot bypass the per-IP limit.
- * In-memory is appropriate for this single-instance deployment.
- */
-export class AccountLockout {
-  private failures = new Map<string, { count: number; firstAt: number }>();
+/** Sliding-window failure counter (in-memory; appropriate for this single-instance deployment). */
+class FailureWindow {
+  private entries = new Map<string, { count: number; firstAt: number }>();
+  constructor(private readonly windowMs: number) {}
 
-  constructor(
-    private readonly maxFailures = 10,
-    private readonly windowMs = 15 * 60_000,
-  ) {}
-
-  isLocked(key: string, now = Date.now()) {
-    const entry = this.failures.get(key);
-    if (!entry) return false;
-    if (now - entry.firstAt > this.windowMs) {
-      this.failures.delete(key);
-      return false;
+  count(key: string, now = Date.now()) {
+    const e = this.entries.get(key);
+    if (!e) return 0;
+    if (now - e.firstAt > this.windowMs) {
+      this.entries.delete(key);
+      return 0;
     }
-    return entry.count >= this.maxFailures;
+    return e.count;
   }
 
-  recordFailure(key: string, now = Date.now()) {
-    const entry = this.failures.get(key);
-    if (!entry || now - entry.firstAt > this.windowMs) this.failures.set(key, { count: 1, firstAt: now });
-    else entry.count++;
+  add(key: string, now = Date.now()) {
+    const e = this.entries.get(key);
+    if (!e || now - e.firstAt > this.windowMs) this.entries.set(key, { count: 1, firstAt: now });
+    else e.count++;
+    if (this.entries.size > 50_000) this.prune(now);
   }
 
   reset(key: string) {
-    this.failures.delete(key);
+    this.entries.delete(key);
+  }
+
+  private prune(now: number) {
+    for (const [k, e] of this.entries) if (now - e.firstAt > this.windowMs) this.entries.delete(k);
   }
 }
+
+/**
+ * Login throttling designed so an attacker can NOT lock the real owner out:
+ *  - Hard limit per (client IP, account): stops a single source from guessing.
+ *  - Account-wide failures (from any IP) only add a growing delay (capped at 5 s) — they never
+ *    block, so a distributed attacker cannot deny the owner access, while large-scale guessing
+ *    against one account is slowed down (on top of Argon2's cost and optional MFA).
+ */
+export class LoginThrottle {
+  private perSource: FailureWindow;
+  private perAccount: FailureWindow;
+
+  constructor(
+    private readonly maxPerSource = 10,
+    windowMs = 15 * 60_000,
+    private readonly accountGrace = 20,
+  ) {
+    this.perSource = new FailureWindow(windowMs);
+    this.perAccount = new FailureWindow(windowMs);
+  }
+
+  isBlocked(ip: string, account: string) {
+    return this.perSource.count(`${ip}|${account}`) >= this.maxPerSource;
+  }
+
+  /** Delay to apply before verifying a password for this account. */
+  delayMs(account: string) {
+    const n = this.perAccount.count(account);
+    return n <= this.accountGrace ? 0 : Math.min(5000, (n - this.accountGrace) * 250);
+  }
+
+  recordFailure(ip: string, account: string) {
+    this.perSource.add(`${ip}|${account}`);
+    this.perAccount.add(account);
+  }
+
+  recordSuccess(ip: string, account: string) {
+    this.perSource.reset(`${ip}|${account}`);
+  }
+}
+
+/** Counts wrong second-factor codes per pending session (the session is revoked at the limit). */
+export class MfaAttempts {
+  private window = new FailureWindow(15 * 60_000);
+  constructor(readonly max = 5) {}
+  fail(sessionId: string) {
+    this.window.add(sessionId);
+    return this.window.count(sessionId) >= this.max;
+  }
+  clear(sessionId: string) {
+    this.window.reset(sessionId);
+  }
+}
+
+/** Coarse limit for unauthenticated API traffic (scanners, floods). Signed-in requests are exempt. */
+export const anonymousApiLimit = () =>
+  rateLimit({
+    windowMs: 5 * 60_000,
+    limit: 300,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    skip: (req: Request) => Boolean(req.auth),
+    message: tooMany,
+  });

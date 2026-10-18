@@ -54,3 +54,17 @@ export function listAuditEvents(db: DB, userId: string, limit = 50, before?: str
     .all()
     .map((e) => ({ ...e, details: JSON.parse(e.details) as Record<string, unknown> }));
 }
+
+/**
+ * Retention: failed sign-in records (which anonymous clients can generate) are kept 90 days,
+ * everything else 2 years, so the table cannot grow without bound.
+ */
+export function pruneAuditEvents(db: DB, now = Date.now()) {
+  const failures = new Date(now - 90 * 86_400_000).toISOString();
+  const others = new Date(now - 730 * 86_400_000).toISOString();
+  return db.$client
+    .prepare(
+      `DELETE FROM audit_events WHERE (type IN ('auth.login.failure', 'auth.mfa.failure') AND created_at < ?) OR created_at < ?`,
+    )
+    .run(failures, others).changes;
+}

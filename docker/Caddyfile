@@ -9,9 +9,18 @@
 {
 	admin off
 	servers {
-		# Trust X-Forwarded-For only from configured proxies (an existing VPS proxy, if any).
-		trusted_proxies static {$UNINOTES_TRUSTED_PROXIES:private_ranges}
+		# Whose X-Forwarded-For to believe. Default (127.0.0.1/32) = nobody, which is correct when
+		# this Caddy faces the internet directly. Only widen it behind an existing proxy (Option B).
+		trusted_proxies static {$UNINOTES_TRUSTED_PROXIES:127.0.0.1/32}
 		client_ip_headers X-Forwarded-For
+		# Slow-client (slowloris) protection.
+		timeouts {
+			read_header 10s
+			read_body 5m
+			write 15m
+			idle 2m
+		}
+		max_header_size 32KB
 	}
 	log {
 		output stdout
@@ -36,6 +45,9 @@
 
 	handle /api/* {
 		reverse_proxy backend:3000 {
+			# Replace (never append to) X-Forwarded-For with the client IP Caddy determined, so the
+			# backend's per-IP limits and audit log cannot be fooled by a spoofed header.
+			header_up X-Forwarded-For {client_ip}
 			# Retry briefly while the backend restarts (e.g. during a backend-only redeploy).
 			lb_try_duration 15s
 			lb_try_interval 500ms

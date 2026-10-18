@@ -112,11 +112,17 @@ export function defineRoute<
     });
   }
 
-  const handler = async (req: Request, res: Response, _next: NextFunction) => {
+  // Authentication runs before any route middleware, so anonymous requests are rejected before
+  // e.g. multipart uploads are buffered into memory.
+  const guard = (req: Request, _res: Response, next: NextFunction) => {
     if (auth) {
       const ctx = req.auth;
-      if (!ctx || (ctx.session.state !== 'active' && !spec.allowMfaPending)) throw unauthorized();
+      if (!ctx || (ctx.session.state !== 'active' && !spec.allowMfaPending)) return next(unauthorized());
     }
+    next();
+  };
+
+  const handler = async (req: Request, res: Response, _next: NextFunction) => {
     const params = spec.params ? parseOrThrow(spec.params, req.params, 'path parameters') : undefined;
     const query = spec.query ? parseOrThrow(spec.query, req.query, 'query parameters') : undefined;
     const body = spec.body ? parseOrThrow(spec.body, req.body ?? {}, 'request body') : undefined;
@@ -139,7 +145,7 @@ export function defineRoute<
     }
   };
 
-  router[spec.method](fullPath, ...(spec.middleware ?? []), handler);
+  router[spec.method](fullPath, guard, ...(spec.middleware ?? []), handler);
 }
 
 // ---------- Shared schema helpers ----------
