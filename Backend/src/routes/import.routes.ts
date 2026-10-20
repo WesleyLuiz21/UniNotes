@@ -34,7 +34,11 @@ export function importRoutes(ctx: AppContext) {
         .union([z.uuid(), z.literal('')])
         .optional()
         .transform((v) => v || null),
-      lectureDate: dateOnly,
+      // Blank or omitted = undated note.
+      lectureDate: z
+        .union([dateOnly, z.literal('')])
+        .optional()
+        .transform((v) => v || null),
       title: z.string().max(300).optional(),
       tags: z
         .string()

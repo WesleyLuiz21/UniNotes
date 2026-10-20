@@ -45,7 +45,7 @@ export interface CreateNoteInput {
   title?: string;
   markdownContent?: string;
   moduleId?: string | null;
-  lectureDate: string;
+  lectureDate: string | null;
   tags?: string[];
   isFavourite?: boolean;
 }
@@ -73,7 +73,7 @@ export function useUpdateNoteMeta() {
       id: string;
       isFavourite?: boolean;
       moduleId?: string | null;
-      lectureDate?: string;
+      lectureDate?: string | null;
       tags?: string[];
     }) => patchNote(id, body),
     onSuccess: afterNoteChange,
@@ -176,7 +176,8 @@ export async function importMarkdown(input: {
 }) {
   const form = new FormData();
   form.set('file', input.file);
-  form.set('lectureDate', input.lectureDate);
+  // Blank = undated note.
+  if (input.lectureDate) form.set('lectureDate', input.lectureDate);
   if (input.moduleId) form.set('moduleId', input.moduleId);
   if (input.title) form.set('title', input.title);
   if (input.tags) form.set('tags', input.tags);

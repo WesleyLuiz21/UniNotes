@@ -88,14 +88,15 @@ export interface CreateNoteInput {
   title: string;
   markdownContent: string;
   moduleId: string | null;
-  lectureDate: string;
+  lectureDate: string | null;
   tags: string[];
   isFavourite: boolean;
   sourceHash?: string | null;
   versionReason?: 'import';
 }
 
-export function createNote(db: DB, userId: string, input: CreateNoteInput) {
+/** Create a note. Accepts a transaction so callers can create related rows atomically. */
+export function createNote(db: DB | Tx, userId: string, input: CreateNoteInput) {
   const now = nowIso();
   const id = newId();
   db.transaction((tx) => {
@@ -133,7 +134,7 @@ export interface NotePatch {
   title?: string;
   markdownContent?: string;
   moduleId?: string | null;
-  lectureDate?: string;
+  lectureDate?: string | null;
   tags?: string[];
   isFavourite?: boolean;
 }
@@ -346,7 +347,7 @@ interface NoteRow {
   title: string;
   excerpt_src: string;
   module_id: string | null;
-  lecture_date: string;
+  lecture_date: string | null;
   is_favourite: number;
   revision: number;
   created_at: string;
@@ -416,9 +417,9 @@ export function queryNotes(db: DB, userId: string, f: NoteQuery) {
     sort === 'relevance' && searching
       ? sql`fts.rank`
       : sort === 'lecture_desc'
-        ? sql`n.lecture_date DESC, n.updated_at DESC`
+        ? sql`n.lecture_date DESC NULLS LAST, n.updated_at DESC`
         : sort === 'lecture_asc'
-          ? sql`n.lecture_date ASC, n.updated_at ASC`
+          ? sql`n.lecture_date ASC NULLS LAST, n.updated_at ASC`
           : sort === 'title'
             ? sql`n.title COLLATE NOCASE ASC`
             : sql`n.updated_at DESC`;

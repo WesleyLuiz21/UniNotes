@@ -55,22 +55,47 @@ function writeAtomic(file: string, data: Buffer) {
   fs.renameSync(tmp, file);
 }
 
+// Source code is stored byte-for-byte and only ever served as a text/plain download.
+export const SOURCE_EXTENSIONS = new Set(['.c', '.h', '.py', '.js', '.ts', '.html']);
+export const MAX_SOURCE_BYTES = 1024 * 1024;
+const SOURCE_MIME = 'text/plain';
+
+/** A validated, processed upload ready to be written to storage. */
+export interface PreparedFile {
+  kind: Attachment['kind'];
+  mimeType: string;
+  data: Buffer;
+  width: number | null;
+  height: number | null;
+  originalName: string;
+}
+
+/** Non-empty, no NUL bytes and strictly valid UTF-8, so renamed binaries are never accepted. */
+function isSourceText(buffer: Buffer): boolean {
+  if (buffer.length === 0 || buffer.includes(0)) return false;
+  try {
+    new TextDecoder('utf-8', { fatal: true }).decode(buffer);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
- * Validate and store an upload for a note.
+ * Validate and process an upload without storing it.
  * Images: real content type is sniffed from the bytes (the client MIME type and extension are
  * ignored), then the image is decoded and re-encoded with sharp, which drops metadata (EXIF/GPS)
- * and any trailing payloads. PDFs: magic bytes are checked; they are only ever served as
+ * and any trailing payloads. PDFs: magic bytes are checked. Source code (.c .h .py .js .ts .html):
+ * must be plain UTF-8 text, kept byte-for-byte. PDFs and source files are only ever served as
  * downloads. Everything else is rejected.
  */
-export async function storeUpload(
+export async function prepareUpload(
   ctx: AppContext,
-  userId: string,
-  noteId: string,
   file: { buffer: Buffer; originalname: string },
-) {
-  getOwnedNote(ctx.db, userId, noteId);
+): Promise<PreparedFile> {
   const detected = await fileTypeFromBuffer(file.buffer);
   const originalName = sanitizeOriginalName(file.originalname, 'upload');
+  const sourceExt = path.extname(originalName).toLowerCase();
 
   let kind: Attachment['kind'];
   let mimeType: string;
@@ -113,41 +138,80 @@ export async function storeUpload(
     kind = 'file';
     mimeType = 'application/pdf';
     data = file.buffer;
+  } else if (SOURCE_EXTENSIONS.has(sourceExt) && !detected) {
+    // !detected: no recognisable binary signature (executables, archives, images renamed to .c).
+    if (file.buffer.length > MAX_SOURCE_BYTES) throw tooLarge('Source file is too large (max 1 MB)');
+    if (!isSourceText(file.buffer)) {
+      throw unsupported('Source files must be non-empty UTF-8 text');
+    }
+    kind = 'file';
+    mimeType = SOURCE_MIME;
+    data = file.buffer;
   } else {
-    throw unsupported('Unsupported file type. Allowed: PNG, JPEG, WebP images and PDF documents.');
+    throw unsupported(
+      'Unsupported file type. Allowed: PNG, JPEG, WebP images, PDF documents and source code (.c .h .py .js .ts .html).',
+    );
   }
 
-  const id = newId();
+  let displayName = originalName;
+  if (mimeType !== SOURCE_MIME) {
+    const ext =
+      kind === 'image'
+        ? `.${IMAGE_TYPES.get(mimeType as never) === 'jpeg' ? 'jpg' : IMAGE_TYPES.get(mimeType as never)}`
+        : '.pdf';
+    if (path.extname(originalName).toLowerCase() !== ext)
+      displayName = `${path.parse(originalName).name || 'upload'}${ext}`;
+  }
+  return { kind, mimeType, data, width, height, originalName: displayName };
+}
+
+/** Write prepared bytes under a new opaque storage key; returns the key. */
+export function writeStoredFile(ctx: AppContext, data: Buffer): string {
   const storageKey = randomToken(24);
   fs.mkdirSync(ctx.config.paths.attachments, { recursive: true });
-  const target = storagePath(ctx, storageKey);
-  writeAtomic(target, data);
-  const ext =
-    kind === 'image'
-      ? `.${IMAGE_TYPES.get(mimeType as never) === 'jpeg' ? 'jpg' : IMAGE_TYPES.get(mimeType as never)}`
-      : '.pdf';
-  const displayName =
-    path.extname(originalName).toLowerCase() === ext
-      ? originalName
-      : `${path.parse(originalName).name || 'upload'}${ext}`;
-  const row = {
+  writeAtomic(storagePath(ctx, storageKey), data);
+  return storageKey;
+}
+
+/** Build the attachments row for a prepared file that has been written under storageKey. */
+export function attachmentRow(
+  userId: string,
+  noteId: string,
+  prepared: PreparedFile,
+  storageKey: string,
+  id: string = newId(),
+): Attachment {
+  return {
     id,
     userId,
     noteId,
-    kind,
-    mimeType,
-    sizeBytes: data.length,
-    originalName: displayName,
+    kind: prepared.kind,
+    mimeType: prepared.mimeType,
+    sizeBytes: prepared.data.length,
+    originalName: prepared.originalName,
     storageKey,
-    sha256: sha256Hex(data),
-    width,
-    height,
+    sha256: sha256Hex(prepared.data),
+    width: prepared.width,
+    height: prepared.height,
     createdAt: nowIso(),
   };
+}
+
+/** Validate and store an upload for a note. */
+export async function storeUpload(
+  ctx: AppContext,
+  userId: string,
+  noteId: string,
+  file: { buffer: Buffer; originalname: string },
+) {
+  getOwnedNote(ctx.db, userId, noteId);
+  const prepared = await prepareUpload(ctx, file);
+  const storageKey = writeStoredFile(ctx, prepared.data);
+  const row = attachmentRow(userId, noteId, prepared, storageKey);
   try {
     ctx.db.insert(attachments).values(row).run();
   } catch (err) {
-    fs.rmSync(target, { force: true });
+    fs.rmSync(storagePath(ctx, storageKey), { force: true });
     throw err;
   }
   return serializeAttachment(row);

@@ -2185,7 +2185,10 @@
                           ]
                         },
                         "lectureDate": {
-                          "type": "string"
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         },
                         "isFavourite": {
                           "type": "boolean"
@@ -2285,8 +2288,15 @@
                     ]
                   },
                   "lectureDate": {
-                    "type": "string",
-                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "tags": {
                     "maxItems": 25,
@@ -2477,7 +2487,10 @@
                           ]
                         },
                         "lectureDate": {
-                          "type": "string"
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         },
                         "isFavourite": {
                           "type": "boolean"
@@ -2622,7 +2635,10 @@
                           ]
                         },
                         "lectureDate": {
-                          "type": "string"
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         },
                         "isFavourite": {
                           "type": "boolean"
@@ -2724,8 +2740,15 @@
                     ]
                   },
                   "lectureDate": {
-                    "type": "string",
-                    "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
                   },
                   "tags": {
                     "maxItems": 25,
@@ -2861,7 +2884,10 @@
                           ]
                         },
                         "lectureDate": {
-                          "type": "string"
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         },
                         "isFavourite": {
                           "type": "boolean"
@@ -3012,7 +3038,10 @@
                           ]
                         },
                         "lectureDate": {
-                          "type": "string"
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         },
                         "isFavourite": {
                           "type": "boolean"
@@ -3163,7 +3192,10 @@
                           ]
                         },
                         "lectureDate": {
-                          "type": "string"
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         },
                         "isFavourite": {
                           "type": "boolean"
@@ -3471,7 +3503,10 @@
                           ]
                         },
                         "lectureDate": {
-                          "type": "string"
+                          "type": [
+                            "string",
+                            "null"
+                          ]
                         },
                         "isFavourite": {
                           "type": "boolean"
@@ -3983,7 +4018,7 @@
     },
     "/api/attachments": {
       "post": {
-        "summary": "Upload an image (PNG/JPEG/WebP, re-encoded) or PDF to a note",
+        "summary": "Upload an image (PNG/JPEG/WebP, re-encoded), PDF or source file (.c .h .py .js .ts .html) to a note",
         "tags": [
           "Attachments"
         ],

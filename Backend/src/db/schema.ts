@@ -4,7 +4,7 @@ import { index, integer, primaryKey, sqliteTable, text, uniqueIndex } from 'driz
 // Conventions:
 // - IDs are opaque random UUIDs (text).
 // - Timestamps are ISO-8601 UTC strings (lexicographically sortable).
-// - lecture_date is a date-only string (YYYY-MM-DD) so it never shifts across time zones.
+// - lecture_date is a date-only string (YYYY-MM-DD) so it never shifts across time zones; it may be null.
 // - Every user-owned table carries user_id so queries can be ownership-scoped.
 
 const timestamps = {
@@ -96,7 +96,8 @@ export const notes = sqliteTable(
     moduleId: text('module_id').references(() => modules.id, { onDelete: 'set null' }),
     title: text('title').notNull(),
     markdownContent: text('markdown_content').notNull().default(''),
-    lectureDate: text('lecture_date').notNull(),
+    // Null when the date is unknown (e.g. undated imported notes); such notes never appear in the calendar.
+    lectureDate: text('lecture_date'),
     isFavourite: integer('is_favourite', { mode: 'boolean' }).notNull().default(false),
     revision: integer('revision').notNull().default(1),
     // SHA-256 of imported content, used to detect duplicate imports.

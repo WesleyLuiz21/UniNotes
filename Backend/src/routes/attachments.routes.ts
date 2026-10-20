@@ -45,7 +45,8 @@ export function attachmentRoutes(ctx: AppContext) {
     method: 'post',
     path: '',
     tag: 'Attachments',
-    summary: 'Upload an image (PNG/JPEG/WebP, re-encoded) or PDF to a note',
+    summary:
+      'Upload an image (PNG/JPEG/WebP, re-encoded), PDF or source file (.c .h .py .js .ts .html) to a note',
     status: 201,
     middleware: [upload.single('file')],
     multipart: { file: 'file', noteId: 'string' },

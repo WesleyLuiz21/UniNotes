@@ -159,11 +159,10 @@ export function ImportDialog({
                   ))}
                 </NativeSelect>
               </Field>
-              <Field label="Lecture date" htmlFor="imp-date">
+              <Field label="Lecture date (optional)" htmlFor="imp-date">
                 <Input
                   id="imp-date"
                   type="date"
-                  required
                   value={lectureDate}
                   onChange={(e) => setLectureDate(e.target.value)}
                 />
@@ -215,7 +214,7 @@ export function ImportDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={() => void submit(false)} disabled={!file || !lectureDate || pending}>
+          <Button onClick={() => void submit(false)} disabled={!file || pending}>
             {pending && <Spinner />} Import note
           </Button>
         </DialogFooter>

@@ -1,0 +1,2004 @@
+{
+  "formatVersion": 1,
+  "description": "Approved mapping (revision 2) for the legacy university notes archive. Paths are relative to archiveRoot.",
+  "archive": {
+    "fileName": "Uni-test.zip",
+    "sha256": "c3547a918b210e1d1ec2e4760d8ad194072c6f4a919b22aaab1753f35d962b07",
+    "archiveRoot": "Uni-test/"
+  },
+  "targetUsername": "switchback",
+  "modules": {
+    "F-IND": {
+      "name": "Foundation Year Induction & General",
+      "academicYear": "2023/24",
+      "color": "#3B82F6",
+      "description": "Imported from legacy university notes (Uni-test.zip): (archive root); Uni/Year0 /InductionsYear0"
+    },
+    "F-CF": {
+      "name": "Computing Foundations",
+      "academicYear": "2023/24",
+      "color": "#10B981",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year0 /Sessions/Computing/FirstSemester"
+    },
+    "F-GT": {
+      "name": "Group Technology Project",
+      "academicYear": "2023/24",
+      "color": "#F59E0B",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year0 /Sessions/Computing/FirstSemester"
+    },
+    "F-MATH": {
+      "name": "Computing Maths",
+      "academicYear": "2023/24",
+      "color": "#EF4444",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year0 /Sessions/Computing/FirstSemester/Computing Maths"
+    },
+    "F-DM": {
+      "name": "Digital Media Technologies",
+      "academicYear": "2023/24",
+      "color": "#8B5CF6",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year0 /Sessions/Computing/SecondSemester (and subfolders)"
+    },
+    "F-PB": {
+      "name": "Problem Solving",
+      "academicYear": "2023/24",
+      "color": "#EC4899",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year0 /Sessions/Computing/SecondSemester (and subfolders)"
+    },
+    "F-IDRP": {
+      "name": "Individual Degree Related Project",
+      "academicYear": "2023/24",
+      "color": "#14B8A6",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year0 /Sessions/Computing/SecondSemester/10th-week; Uni/Year0 /Sessions/Computing/SecondSemester/11th-week; Uni/Year0 /Sessions/Computing/SecondSemester/1st-week; Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week; Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week; Uni/Year0 /Sessions/Computing/SecondSemester/5th-week; Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB; Uni/Year0 /Sessions/Computing/SecondSemester/6th-week; Uni/Year0 /Sessions/Computing/SecondSemester/7th-week; Uni/Year0 /Sessions/Computing/SecondSemester/8th-week; Uni/Year0 /Sessions/Computing/SecondSemester/9th-week"
+    },
+    "Y1-NET": {
+      "name": "Networking",
+      "academicYear": "2024/25",
+      "color": "#F97316",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year 1/Sessions/FirstSemester/Week1; Uni/Year 1/Sessions/FirstSemester/Week2; Uni/Year 1/Sessions/FirstSemester/Week3; Uni/Year 1/Sessions/FirstSemester/week8"
+    },
+    "Y1-UX": {
+      "name": "User Experience (UX)",
+      "academicYear": "2024/25",
+      "color": "#6366F1",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year 1/Sessions/FirstSemester/Week1; Uni/Year 1/Sessions/FirstSemester/Week2; Uni/Year 1/Sessions/FirstSemester/Week3; Uni/Year 1/Sessions/FirstSemester/Week4; Uni/Year 1/Sessions/FirstSemester/week6; Uni/Year 1/Sessions/FirstSemester/week8"
+    },
+    "Y1-PSTP": {
+      "name": "Problem Solving Through Programming",
+      "academicYear": "2024/25",
+      "color": "#84CC16",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year 1/Sessions/FirstSemester/Week1; Uni/Year 1/Sessions/FirstSemester/Week2"
+    },
+    "Y1-DA": {
+      "name": "Data Analysis",
+      "academicYear": "2024/25",
+      "color": "#3B82F6",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year 1/Sessions/SecondSemester/Data Analysis"
+    },
+    "Y1-DB": {
+      "name": "Database",
+      "academicYear": "2024/25",
+      "color": "#10B981",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year 1/Sessions/SecondSemester/Data Analysis; Uni/Year 1/Sessions/SecondSemester/Database"
+    },
+    "Y1-WEB": {
+      "name": "Web Technologies",
+      "academicYear": "2024/25",
+      "color": "#F59E0B",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year 1/Sessions/SecondSemester/Web"
+    },
+    "Y2-ADS": {
+      "name": "Advanced Database Systems",
+      "academicYear": "2025/26",
+      "color": "#EF4444",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year2/FirstSemester/Advanced Database Systems (and subfolders)"
+    },
+    "Y2-ABI": {
+      "name": "Analytics and Business Intelligence",
+      "academicYear": "2025/26",
+      "color": "#8B5CF6",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year2/FirstSemester/Advanced Database Systems/Sessions; Uni/Year2/FirstSemester/Analytics and Business Intelligence; Uni/Year2/FirstSemester/Analytics and Business Intelligence/Report"
+    },
+    "Y2-OODD": {
+      "name": "Object-Oriented Design and Development",
+      "academicYear": "2025/26",
+      "color": "#EC4899",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year2/FirstSemester/Object Oriented Design and Dev (and subfolders)"
+    },
+    "Y2-HCI": {
+      "name": "Human-Computer Interaction (HCI)",
+      "academicYear": "2025/26",
+      "color": "#14B8A6",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year2/SecondSemester/HCI"
+    },
+    "Y2-RM": {
+      "name": "Research Methods",
+      "academicYear": "2025/26",
+      "color": "#F97316",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year2/SecondSemester/Reasearch Methods"
+    },
+    "Y2-WAD": {
+      "name": "Web Application Development",
+      "academicYear": "2025/26",
+      "color": "#6366F1",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year2/SecondSemester/WebAppDev"
+    },
+    "IS-CISCO": {
+      "name": "Cisco Networking Academy",
+      "academicYear": "Independent Study",
+      "color": "#84CC16",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year 1/Extra; Uni/Year 1/Extra/network"
+    },
+    "IS-JS": {
+      "name": "JavaScript Front-end",
+      "academicYear": "Independent Study",
+      "color": "#3B82F6",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year0 /Extra courses/JS Frontend"
+    },
+    "IS-FS": {
+      "name": "Full-stack Web Development",
+      "academicYear": "Independent Study",
+      "color": "#10B981",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year0 /Extra courses/Fullstack web dev"
+    },
+    "IS-KOT": {
+      "name": "Kotlin",
+      "academicYear": "Independent Study",
+      "color": "#F59E0B",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year2/Side Courses/Kotlin"
+    },
+    "IS-BOOK": {
+      "name": "Book Notes",
+      "academicYear": "Independent Study",
+      "color": "#EF4444",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Books Notes"
+    },
+    "IS-OTHER": {
+      "name": "Other Online Courses",
+      "academicYear": "Independent Study",
+      "color": "#8B5CF6",
+      "description": "Imported from legacy university notes (Uni-test.zip): Uni/Year 1/Extra; Uni/Year0 /Extra courses/Intro to Cybersecurity"
+    }
+  },
+  "notes": [
+    {
+      "source": "Uni/Year0 /InductionsYear0/Induction0 03-10-23.md",
+      "module": "F-IND",
+      "title": "Contents",
+      "lectureDate": "2023-10-03",
+      "tags": [
+        "legacy-import",
+        "year-0"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /InductionsYear0/Induction1 10-10-23.md",
+      "module": "F-IND",
+      "title": "Session 1 - When things go wrong",
+      "lectureDate": "2023-10-10",
+      "tags": [
+        "legacy-import",
+        "year-0"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /InductionsYear0/Induction2 11-10-23.md",
+      "module": "F-IND",
+      "title": "Extenuating Circumstances",
+      "lectureDate": "2023-10-11",
+      "tags": [
+        "legacy-import",
+        "year-0"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /InductionsYear0/Induction3 14-10-23.md",
+      "module": "F-IND",
+      "title": "Ace Team Induction",
+      "lectureDate": "2023-10-14",
+      "tags": [
+        "legacy-import",
+        "year-0"
+      ]
+    },
+    {
+      "source": "readme.md",
+      "module": "F-IND",
+      "title": "This repository is for University resoucers/notes only.",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0"
+      ],
+      "review": "Repository readme (Year 0 links + 3 images). Recommended Induction & General."
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 02-01-24.md",
+      "module": "F-CF",
+      "title": "Computing | back from the holidays",
+      "lectureDate": "2024-01-02",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 04-11-23.md",
+      "module": "F-CF",
+      "title": "Computing | Saturday class | week 3",
+      "lectureDate": "2023-11-04",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 05-12-23.md",
+      "module": "F-CF",
+      "title": "Computing",
+      "lectureDate": "2023-12-05",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 11-11-23.md",
+      "module": "F-CF",
+      "title": "Computing | Saturday class",
+      "lectureDate": "2023-11-11",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 11-12-23.md",
+      "module": "F-CF",
+      "title": "Computing",
+      "lectureDate": "2023-12-11",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ],
+      "review": "Only Monday session; heading \"Computing\", topic cloud computing; recommended CF."
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 14-11-23.md",
+      "module": "F-CF",
+      "title": "Computing",
+      "lectureDate": "2023-11-14",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 16-01-24.md",
+      "module": "F-CF",
+      "title": "Computing",
+      "lectureDate": "2024-01-16",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 17-10-23.md",
+      "module": "F-CF",
+      "title": "Computing Foundations",
+      "lectureDate": "2023-10-17",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 18-10-23.md",
+      "module": "F-CF",
+      "title": "Seminar",
+      "lectureDate": "2023-10-18",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ],
+      "review": "Heading only \"Seminar\" (Wed, week 1). Content (smartphone features) fits Computing Foundations; recommended CF."
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 21-10-23.md",
+      "module": "F-CF",
+      "title": "Computing",
+      "lectureDate": "2023-10-21",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 21-11-23.md",
+      "module": "F-CF",
+      "title": "Computing",
+      "lectureDate": "2023-11-21",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 23-01-24.md",
+      "module": "F-CF",
+      "title": "Session 23-01-24",
+      "lectureDate": "2024-01-23",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1",
+        "legacy-empty"
+      ],
+      "empty": true,
+      "review": "Empty file; Tuesday = Computing Foundations day (weekday evidence only)."
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 24-10-23.md",
+      "module": "F-CF",
+      "title": "Computing",
+      "lectureDate": "2023-10-24",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 28-10-23.md",
+      "module": "F-CF",
+      "title": "Computing",
+      "lectureDate": "2023-10-28",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 31-10-23.md",
+      "module": "F-CF",
+      "title": "Computer",
+      "lectureDate": "2023-10-31",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Review 10-01-24.md",
+      "module": "F-GT",
+      "title": "Group Tech Review",
+      "lectureDate": "2024-01-10",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 01-11-23.md",
+      "module": "F-GT",
+      "title": "Social Capital",
+      "lectureDate": "2023-11-01",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ],
+      "review": "Heading \"Social Capital\" (Wed). Teamwork/social-capital theory matches the group-work report notes; recommended GT."
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 03-01-24.md",
+      "module": "F-GT",
+      "title": "Group Technology",
+      "lectureDate": "2024-01-03",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 08-11-23.md",
+      "module": "F-GT",
+      "title": "Group Project",
+      "lectureDate": "2023-11-08",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 13-12-23.md",
+      "module": "F-GT",
+      "title": "Group technology",
+      "lectureDate": "2023-12-13",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 15-11-23.md",
+      "module": "F-GT",
+      "title": "Group Project",
+      "lectureDate": "2023-11-15",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 17-01-24.md",
+      "module": "F-GT",
+      "title": "Group technology",
+      "lectureDate": "2024-01-17",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 18-11-23.md",
+      "module": "F-GT",
+      "title": "Computing Group Project| Saturday class",
+      "lectureDate": "2023-11-18",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ],
+      "review": "Saturday, but heading \"Computing Group Project\" and essay/report content; recommended GT."
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 22-11-23.md",
+      "module": "F-GT",
+      "title": "Group Technology project",
+      "lectureDate": "2023-11-22",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 25-10-23.md",
+      "module": "F-GT",
+      "title": "Group Project",
+      "lectureDate": "2023-10-25",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Session 25-11-23.md",
+      "module": "F-GT",
+      "title": "Group Project | Saturday Class",
+      "lectureDate": "2023-11-25",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Computing Maths/Maths 01-11-23.md",
+      "module": "F-MATH",
+      "title": "What is formula",
+      "lectureDate": "2023-11-01",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Computing Maths/Maths 17-10-23.md",
+      "module": "F-MATH",
+      "title": "Foundation Maths | Second lesson",
+      "lectureDate": "2023-10-17",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Computing Maths/Maths 24-10-23.md",
+      "module": "F-MATH",
+      "title": "Maths",
+      "lectureDate": "2023-10-24",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Computing Maths/Maths 31-10-32.md",
+      "module": "F-MATH",
+      "title": "Algebra",
+      "lectureDate": "2023-10-31",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ],
+      "dateCorrection": {
+        "filenameDate": "31-10-32",
+        "parsedAs": "2032-10-31",
+        "correctedTo": "2023-10-31",
+        "reason": "Typo in filename: 2032 is outside Year 0; 31-10-23 is a Tuesday like the other maths lessons and Session 31-10-23.md exists. Approved by the user."
+      },
+      "review": "Filename date 31-10-32 (= 2032). Corrected to 2023-10-31 per your approval; original filename kept in manifest."
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/FirstSemester/Computing Maths/Maths-General-Notes.md",
+      "module": "F-MATH",
+      "title": "Here I store general Maths notes",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s1"
+      ],
+      "transforms": [
+        {
+          "type": "replace-line",
+          "line": 1,
+          "from": "<h1 style='color:red'> Here I store general Maths notes</h1>",
+          "to": "# Here I store general Maths notes",
+          "reason": "Raw HTML is not rendered by UniNotes; the heading would be invisible. Approved."
+        }
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/10th-week/MD07-05-24.md",
+      "module": "F-DM",
+      "title": "Digital Media",
+      "lectureDate": "2024-05-07",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-10"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/11th-week/DM14-05-24.md",
+      "module": "F-DM",
+      "title": "Digital Media",
+      "lectureDate": "2024-05-14",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-11"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/1st-week/DM Session13-02-24.md",
+      "module": "F-DM",
+      "title": "Digital Media Technologies | first session",
+      "lectureDate": "2024-02-13",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/1st-week/Seminar17-02-24.md",
+      "module": "F-DM",
+      "title": "Digital Media Technologies",
+      "lectureDate": "2024-02-17",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/DM 20-02-24.md",
+      "module": "F-DM",
+      "title": "Digital Media",
+      "lectureDate": "2024-02-20",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-2"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week/DM27-02-24.md",
+      "module": "F-DM",
+      "title": "Digital Media Tech",
+      "lectureDate": "2024-02-27",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-3"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/4th-week/DM05-03-24.md",
+      "module": "F-DM",
+      "title": "Digital media",
+      "lectureDate": "2024-03-05",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-4"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/MD12-03-24.md",
+      "module": "F-DM",
+      "title": "Digital Media",
+      "lectureDate": "2024-03-12",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-5"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/6th-week/DM19-03-24.md",
+      "module": "F-DM",
+      "title": "Digital Media Tech",
+      "lectureDate": "2024-03-19",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-6"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/7th-week/DM16-04-24.md",
+      "module": "F-DM",
+      "title": "Digital Media Tech",
+      "lectureDate": "2024-04-16",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-7"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/DM30-04-24.md",
+      "module": "F-DM",
+      "title": "Digital Media",
+      "lectureDate": "2024-04-30",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-9"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/11th-week/PB.md",
+      "module": "F-PB",
+      "title": "Problem Solving",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-11"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/1st-week/PB Session13-02-24.md",
+      "module": "F-PB",
+      "title": "Problem Solving - first session",
+      "lectureDate": "2024-02-13",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/PB20-02-24.md",
+      "module": "F-PB",
+      "title": "Problem Solving",
+      "lectureDate": "2024-02-20",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-2"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/PBSeminar.md",
+      "module": "F-PB",
+      "title": "Problem solving",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-2"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week/PB27-02-24.md",
+      "module": "F-PB",
+      "title": "Problem Solving",
+      "lectureDate": "2024-02-27",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-3"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/PB12-03-24.md",
+      "module": "F-PB",
+      "title": "PB12-03-24",
+      "lectureDate": "2024-03-12",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-5",
+        "legacy-empty"
+      ],
+      "empty": true
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/10th-week/IPR08-05-24.md",
+      "module": "F-IDRP",
+      "title": "Individual Related Project",
+      "lectureDate": "2024-05-08",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-10"
+      ],
+      "transforms": [
+        {
+          "type": "replace-line",
+          "line": 5,
+          "from": "![\n    \n](image-9.png)",
+          "to": "![](image-9.png)",
+          "reason": "Broken image markup: a blank line splits \"![\" from \"](image-9.png)\", so it has never rendered as an image (CommonMark). Repair so image-9.png displays. Approved by the user on 2026-10-20."
+        }
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/10th-week/IPR08-05-24_.md",
+      "module": "F-IDRP",
+      "title": "Individual Related Project",
+      "lectureDate": "2024-05-08",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-10",
+        "legacy-near-duplicate"
+      ],
+      "nearDuplicateOf": "Uni/Year0 /Sessions/Computing/SecondSemester/10th-week/IPR08-05-24.md",
+      "review": "Near-duplicate of IPR08-05-24.md (whitespace-only differences). Recommended: separate note, tagged legacy-near-duplicate.",
+      "transforms": [
+        {
+          "type": "replace-line",
+          "line": 5,
+          "from": "![\n  \n](image-9.png)",
+          "to": "![](image-9.png)",
+          "reason": "Broken image markup: a blank line splits \"![\" from \"](image-9.png)\", so it has never rendered as an image (CommonMark). Repair so image-9.png displays. Approved by the user on 2026-10-20."
+        }
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/11th-week/IDRP15-05-24.md",
+      "module": "F-IDRP",
+      "title": "Indivual Related",
+      "lectureDate": "2024-05-15",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-11"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/1st-week/IDRP Session14-02-24.md",
+      "module": "F-IDRP",
+      "title": "Individual Degree Related Project",
+      "lectureDate": "2024-02-14",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/IRP21-02-24.md",
+      "module": "F-IDRP",
+      "title": "Individual Project Related",
+      "lectureDate": "2024-02-21",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-2"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/IRPSeminar.md",
+      "module": "F-IDRP",
+      "title": "Individual related project",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-2"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week/IDPR28-02-24.md",
+      "module": "F-IDRP",
+      "title": "Individual Degree Related Project",
+      "lectureDate": "2024-02-28",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-3"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/IDPR130324.md",
+      "module": "F-IDRP",
+      "title": "Reports and essays structure",
+      "lectureDate": "2024-03-13",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-5"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/IPRSaturday.md",
+      "module": "F-IDRP",
+      "title": "Indivudal Related Project",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-5"
+      ],
+      "review": "Stored in 5th-week/PB/ but heading is \"Indivudal Related Project\". Literature-review content; recommended IDRP."
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/6th-week/IRPD20-03-24.md",
+      "module": "F-IDRP",
+      "title": "Project Managment - again D:",
+      "lectureDate": "2024-03-20",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-6"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/7th-week/IDRP17-04-24.md",
+      "module": "F-IDRP",
+      "title": "Individual Degree Related Project",
+      "lectureDate": "2024-04-17",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-7"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/8th-week/IDPR240424.md",
+      "module": "F-IDRP",
+      "title": "Individual Project related",
+      "lectureDate": "2024-04-24",
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-8"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/IR.md",
+      "module": "F-IDRP",
+      "title": "Project details",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0",
+        "s2",
+        "week-9"
+      ],
+      "review": "Heading \"Project details\" (project presentation/report); recommended IDRP."
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week1/NET141024.md",
+      "module": "Y1-NET",
+      "title": "Intro to networks",
+      "lectureDate": "2024-10-14",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-1"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week2/Net.md",
+      "module": "Y1-NET",
+      "title": "Assessment Information",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week2/Net261024.md",
+      "module": "Y1-NET",
+      "title": "Networks",
+      "lectureDate": "2024-10-26",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week3/Net281024.md",
+      "module": "Y1-NET",
+      "title": "Network",
+      "lectureDate": "2024-10-28",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-3"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week3/Seminar-NET.md",
+      "module": "Y1-NET",
+      "title": "IP Address",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-3"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/week8/NET.md",
+      "module": "Y1-NET",
+      "title": "Network",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-8"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week1/Airbnb.md",
+      "module": "Y1-UX",
+      "title": "Airbnb UI/UX Research",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-1"
+      ],
+      "review": "Year 1 Week 1 \"Airbnb UI/UX Research\". Recommended UX."
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week1/UX161024.md",
+      "module": "Y1-UX",
+      "title": "User Experience",
+      "lectureDate": "2024-10-16",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-1"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week2/UX231024.md",
+      "module": "Y1-UX",
+      "title": "Objectives",
+      "lectureDate": "2024-10-23",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week3/UX.md",
+      "module": "Y1-UX",
+      "title": "Double Diamond",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-3"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week4/UX.md",
+      "module": "Y1-UX",
+      "title": "UX",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-4"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/week6/ux201124.md",
+      "module": "Y1-UX",
+      "title": "UX",
+      "lectureDate": "2024-11-20",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-6"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/week8/UX.md",
+      "module": "Y1-UX",
+      "title": "User Experience",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-8"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week1/PSTP141024.md",
+      "module": "Y1-PSTP",
+      "title": "Problem Solving Through Programming Introduction",
+      "lectureDate": "2024-10-14",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-1"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/FirstSemester/Week2/Python.md",
+      "module": "Y1-PSTP",
+      "title": "Useful Information",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s1",
+        "week-2"
+      ],
+      "review": "Year 1 Week 2 \"Useful Information\" (Python). Single Boolean-logic diagram; recommended PSTP."
+    },
+    {
+      "source": "Uni/Year 1/Sessions/SecondSemester/Data Analysis/10-02-2025.md",
+      "module": "Y1-DA",
+      "title": "Data Analytics",
+      "lectureDate": "2025-02-10",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/SecondSemester/Data Analysis/17-02-2025.md",
+      "module": "Y1-DA",
+      "title": "Data Collection",
+      "lectureDate": "2025-02-17",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/SecondSemester/Data Analysis/22-02-2025.md",
+      "module": "Y1-DA",
+      "title": "Data Analysis",
+      "lectureDate": "2025-02-22",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/SecondSemester/Data Analysis/05-03-2025.md",
+      "module": "Y1-DB",
+      "title": "Database",
+      "lectureDate": "2025-03-05",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s2"
+      ],
+      "review": "In Data Analysis folder, but heading \"Database\", SQL joins, and Wednesday = Database day; recommended move to Database."
+    },
+    {
+      "source": "Uni/Year 1/Sessions/SecondSemester/Database/02-04-2025.md",
+      "module": "Y1-DB",
+      "title": "Database",
+      "lectureDate": "2025-04-02",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/SecondSemester/Database/19-02-2025.md",
+      "module": "Y1-DB",
+      "title": "Introduction to Databases",
+      "lectureDate": "2025-02-19",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/SecondSemester/Database/SQL.md",
+      "module": "Y1-DB",
+      "title": "SQL Commands and stuff",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/SecondSemester/Web/12-02-25.md",
+      "module": "Y1-WEB",
+      "title": "Web Tech",
+      "lectureDate": "2025-02-12",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Sessions/SecondSemester/Web/24-02-25.md",
+      "module": "Y1-WEB",
+      "title": "Web Tech",
+      "lectureDate": "2025-02-24",
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Advanced Database Systems/14-10-2025.md",
+      "module": "Y2-ADS",
+      "title": "Advanced Database Systems",
+      "lectureDate": "2025-10-14",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Advanced Database Systems/Sessions/11-11-2025.md",
+      "module": "Y2-ADS",
+      "title": "11-11-2025",
+      "lectureDate": "2025-11-11",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Advanced Database Systems/Sessions/Info.md",
+      "module": "Y2-ADS",
+      "title": "Normalisation",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Advanced Database Systems/Sessions/30-10-2025.md",
+      "module": "Y2-ABI",
+      "title": "Decriptive Analytics",
+      "lectureDate": "2025-10-30",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ],
+      "review": "In ADS folder, but heading \"Decriptive Analytics\" and Thursday = ABI day (ADS is Tuesday); recommended move to ABI."
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Analytics and Business Intelligence/13-11-25.md",
+      "module": "Y2-ABI",
+      "title": "13-11-25",
+      "lectureDate": "2025-11-13",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Analytics and Business Intelligence/16-10-25.md",
+      "module": "Y2-ABI",
+      "title": "Analytics and Business Intelligence",
+      "lectureDate": "2025-10-16",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Analytics and Business Intelligence/Report/Week1.md",
+      "module": "Y2-ABI",
+      "title": "Week 1",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Object Oriented Design and Dev/16-10-25.md",
+      "module": "Y2-OODD",
+      "title": "Loops",
+      "lectureDate": "2025-10-16",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Object Oriented Design and Dev/Sessions/13-11-25.md",
+      "module": "Y2-OODD",
+      "title": "13-11-25",
+      "lectureDate": "2025-11-13",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Object Oriented Design and Dev/Sessions/14-10-2025.md",
+      "module": "Y2-OODD",
+      "title": "Object Oriented Design and Development",
+      "lectureDate": "2025-10-14",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/FirstSemester/Object Oriented Design and Dev/Sessions/OOP.md",
+      "module": "Y2-OODD",
+      "title": "Object Oriented Logic Study",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s1"
+      ]
+    },
+    {
+      "source": "Uni/Year2/SecondSemester/HCI/21-02-26.md",
+      "module": "Y2-HCI",
+      "title": "Human Computer Interactions",
+      "lectureDate": "2026-02-21",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year2/SecondSemester/Reasearch Methods/05-03-26.md",
+      "module": "Y2-RM",
+      "title": "05-03-26",
+      "lectureDate": "2026-03-05",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s2",
+        "legacy-empty"
+      ],
+      "empty": true
+    },
+    {
+      "source": "Uni/Year2/SecondSemester/WebAppDev/21-02-26.md",
+      "module": "Y2-WAD",
+      "title": "21-02-26",
+      "lectureDate": "2026-02-21",
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year2/SecondSemester/WebAppDev/react-refresh.md",
+      "module": "Y2-WAD",
+      "title": "React JS Refresh",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s2"
+      ]
+    },
+    {
+      "source": "Uni/Year2/SecondSemester/WebAppDev/react-typescript.md",
+      "module": "Y2-WAD",
+      "title": "React + TypeScript Quick Refresh",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-2",
+        "s2"
+      ],
+      "transforms": [
+        {
+          "type": "remove-chat-citations",
+          "expectedCount": 7,
+          "reason": "Broken chat-tool citation markers (lines 80, 109, 191, 318, 433, 575, 615). Approved."
+        }
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Extra/Network Course - Cisco.md",
+      "module": "IS-CISCO",
+      "title": "Network Course on Cisco Academy",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Extra/network/Network 2.md",
+      "module": "IS-CISCO",
+      "title": "Cisco IOS Access",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Extra/network/network3.md",
+      "module": "IS-CISCO",
+      "title": "Network Module 3",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Extra courses/JS Frontend/Bootstrap.md",
+      "module": "IS-JS",
+      "title": "Bootstrap",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Extra courses/JS Frontend/DOM.md",
+      "module": "IS-JS",
+      "title": "Manipulating Pages",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0"
+      ]
+    },
+    {
+      "source": "Uni/Year0 /Extra courses/Fullstack web dev/Fullstack course note.md",
+      "module": "IS-FS",
+      "title": "Web development essentials",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0"
+      ]
+    },
+    {
+      "source": "Uni/Year2/Side Courses/Kotlin/PT-1.md",
+      "module": "IS-KOT",
+      "title": "Kotlin",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-2"
+      ]
+    },
+    {
+      "source": "Uni/Books Notes/UX Experience.md",
+      "module": "IS-BOOK",
+      "title": "Communicating The UX Experience",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import"
+      ]
+    },
+    {
+      "source": "Uni/Year 1/Extra/Google.md",
+      "module": "IS-OTHER",
+      "title": "Google Cloud",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1"
+      ],
+      "review": "Year 1 extra course (Google Cloud). Recommended Other Online Courses."
+    },
+    {
+      "source": "Uni/Year 1/Extra/python.md",
+      "module": "IS-OTHER",
+      "title": "Python Course",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1"
+      ],
+      "review": "Year 1 extra \"Python Course\". In Extra/ (not a session); recommended Other Online Courses."
+    },
+    {
+      "source": "Uni/Year0 /Extra courses/Intro to Cybersecurity/Course.md",
+      "module": "IS-OTHER",
+      "title": "Cybersecurity",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-0"
+      ],
+      "review": "Year 0 extra \"Intro to Cybersecurity\". Cybersecurity-cube content suggests Cisco NetAcad, unproven; recommended Other Online Courses."
+    },
+    {
+      "source": "Uni/Year 1/Sessions/idk.md",
+      "module": null,
+      "title": "idk",
+      "lectureDate": null,
+      "tags": [
+        "legacy-import",
+        "year-1",
+        "legacy-empty"
+      ],
+      "empty": true,
+      "review": "Empty file, no heading, only Year 1 context. Recommended: unassigned (no module), year-1 tag."
+    }
+  ],
+  "sourceNotes": [
+    {
+      "module": "F-PB",
+      "title": "Problem Solving — Source files",
+      "tags": [
+        "legacy-import",
+        "source-files"
+      ],
+      "groups": [
+        {
+          "heading": "1st-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/1st-week",
+          "relatedNotes": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/1st-week/PB Session13-02-24.md"
+          ],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/1st-week/lesson.c"
+          ]
+        },
+        {
+          "heading": "2nd-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week",
+          "relatedNotes": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/PB20-02-24.md",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/PBSeminar.md"
+          ],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/exercise.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/exercise2.c"
+          ]
+        },
+        {
+          "heading": "3rd-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week",
+          "relatedNotes": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week/PB27-02-24.md"
+          ],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week/exercise.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week/exercise2.c"
+          ]
+        },
+        {
+          "heading": "4th-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/4th-week",
+          "relatedNotes": [],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/4th-week/exercise.c"
+          ]
+        },
+        {
+          "heading": "5th-week/PB",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB",
+          "relatedNotes": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/PB12-03-24.md"
+          ],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise2.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise3.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise4.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise6.c"
+          ]
+        },
+        {
+          "heading": "6th-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/6th-week",
+          "relatedNotes": [],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/6th-week/Exercise19-03-24.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/6th-week/PBSaturday.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/6th-week/execise2.c"
+          ]
+        },
+        {
+          "heading": "7th-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/7th-week",
+          "relatedNotes": [],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/7th-week/exercise.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/7th-week/exercise2.c"
+          ]
+        },
+        {
+          "heading": "8th-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/8th-week",
+          "relatedNotes": [],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/8th-week/exercise.c"
+          ]
+        },
+        {
+          "heading": "9th-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week",
+          "relatedNotes": [],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/exercise.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/exercise2.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/exercise3.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/lesson.c"
+          ]
+        },
+        {
+          "heading": "10th-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/10th-week",
+          "relatedNotes": [],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/10th-week/exercise.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/10th-week/exercise2.c"
+          ]
+        },
+        {
+          "heading": "11th-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/11th-week",
+          "relatedNotes": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/11th-week/PB.md"
+          ],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/11th-week/exercise.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/11th-week/saturday.c"
+          ]
+        },
+        {
+          "heading": "12th-week",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/12th-week",
+          "relatedNotes": [],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/12th-week/exercise.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/12th-week/exercise2.c"
+          ]
+        },
+        {
+          "heading": "PB-Assesment",
+          "folder": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment",
+          "relatedNotes": [],
+          "files": [
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task1-B.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task1-C.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task1-D.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task2-B.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task2-C.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task2-D.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task3-B.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task3-C.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task3-D.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task4-B.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task4-C.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task4-D.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task5-C.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task5-D.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task6-C.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task6-D.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task7-C.c",
+            "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task7-D.c"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "Y1-WEB",
+      "title": "Web Technologies — Source files",
+      "tags": [
+        "legacy-import",
+        "source-files"
+      ],
+      "groups": [
+        {
+          "heading": "Web",
+          "folder": "Uni/Year 1/Sessions/SecondSemester/Web",
+          "relatedNotes": [
+            "Uni/Year 1/Sessions/SecondSemester/Web/12-02-25.md",
+            "Uni/Year 1/Sessions/SecondSemester/Web/24-02-25.md"
+          ],
+          "files": [
+            "Uni/Year 1/Sessions/SecondSemester/Web/ajax.html",
+            "Uni/Year 1/Sessions/SecondSemester/Web/script.js"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "Y1-PSTP",
+      "title": "PSTP — Source files",
+      "tags": [
+        "legacy-import",
+        "source-files"
+      ],
+      "groups": [
+        {
+          "heading": "Week1",
+          "folder": "Uni/Year 1/Sessions/FirstSemester/Week1",
+          "relatedNotes": [
+            "Uni/Year 1/Sessions/FirstSemester/Week1/PSTP141024.md"
+          ],
+          "files": [
+            "Uni/Year 1/Sessions/FirstSemester/Week1/Text.py"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "IS-OTHER",
+      "title": "Other Online Courses — Source files",
+      "tags": [
+        "legacy-import",
+        "source-files"
+      ],
+      "groups": [
+        {
+          "heading": "Extra",
+          "folder": "Uni/Year 1/Extra",
+          "relatedNotes": [
+            "Uni/Year 1/Extra/Google.md",
+            "Uni/Year 1/Extra/python.md"
+          ],
+          "files": [
+            "Uni/Year 1/Extra/test.py"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "IS-JS",
+      "title": "JavaScript Front-end — Source files",
+      "tags": [
+        "legacy-import",
+        "source-files"
+      ],
+      "groups": [
+        {
+          "heading": "JS Frontend",
+          "folder": "Uni/Year0 /Extra courses/JS Frontend",
+          "relatedNotes": [
+            "Uni/Year0 /Extra courses/JS Frontend/Bootstrap.md",
+            "Uni/Year0 /Extra courses/JS Frontend/DOM.md"
+          ],
+          "files": [
+            "Uni/Year0 /Extra courses/JS Frontend/index.html"
+          ]
+        }
+      ]
+    },
+    {
+      "module": "Y2-WAD",
+      "title": "Web Application Development — Source files",
+      "tags": [
+        "legacy-import",
+        "source-files"
+      ],
+      "groups": [
+        {
+          "heading": "WebAppDev",
+          "folder": "Uni/Year2/SecondSemester/WebAppDev",
+          "relatedNotes": [
+            "Uni/Year2/SecondSemester/WebAppDev/21-02-26.md",
+            "Uni/Year2/SecondSemester/WebAppDev/react-refresh.md",
+            "Uni/Year2/SecondSemester/WebAppDev/react-typescript.md"
+          ],
+          "files": [
+            "Uni/Year2/SecondSemester/WebAppDev/grade.ts"
+          ]
+        }
+      ]
+    }
+  ],
+  "exclude": [
+    {
+      "path": ".vscode/settings.json",
+      "reason": "repository-metadata"
+    },
+    {
+      "path": ".vscode/tasks.json",
+      "reason": "repository-metadata"
+    },
+    {
+      "path": "package-lock.json",
+      "reason": "repository-metadata"
+    },
+    {
+      "path": "package.json",
+      "reason": "repository-metadata"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/10th-week/exercise",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/11th-week/exercise",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/11th-week/saturday",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/exercise",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/2nd-week/exercise2",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week/exercise",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/3rd-week/exercise2",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise2",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise3",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise4",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/5th-week/PB/exercise6",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/6th-week/Exercise19-03-24",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/6th-week/PBSaturday",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/6th-week/execise2",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/7th-week/exercise",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/7th-week/exercise2",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/8th-week/exercise",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/exercise",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/exercise2",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/exercise3",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/9th-week/lesson",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Assesment1",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task1-B",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task1-C",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task1-D",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task2-B",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task2-C",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task2-D",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task3-B",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task3-C",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task3-D",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task4-B",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task4-C",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task4-D",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task5-C",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task5-D",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task6-C",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task6-D",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task7-C",
+      "reason": "compiled-executable"
+    },
+    {
+      "path": "Uni/Year0 /Sessions/Computing/SecondSemester/PB-Assesment/Task7-D",
+      "reason": "compiled-executable"
+    }
+  ]
+}

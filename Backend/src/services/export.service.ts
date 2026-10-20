@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import type { Response } from 'express';
-import { and, eq, inArray, isNull } from 'drizzle-orm';
+import { and, eq, inArray, isNull, sql } from 'drizzle-orm';
 import yazl from 'yazl';
 import type { AppContext } from '../context.js';
 import {
@@ -40,7 +40,7 @@ export function frontMatter(n: Note, mod: Pick<Module, 'name' | 'code'> | null, 
   const lines = [
     '---',
     `title: ${yamlString(n.title)}`,
-    `lecture_date: ${n.lectureDate}`,
+    `lecture_date: ${n.lectureDate ?? 'null'}`,
     ...(mod ? [`module: ${yamlString(mod.name)}`] : []),
     ...(mod?.code ? [`module_code: ${yamlString(mod.code)}`] : []),
     `tags: [${tags.map(yamlString).join(', ')}]`,
@@ -94,7 +94,11 @@ function collectBundles(ctx: AppContext, userId: string, noteRows: Note[]): Note
   });
 }
 
-export const noteFileStem = (n: Note) => `${n.lectureDate}-${slugify(n.title, 'untitled-note', 70)}`;
+export const noteFileStem = (n: Note) =>
+  `${n.lectureDate ?? 'undated'}-${slugify(n.title, 'untitled-note', 70)}`;
+
+// Dated notes in lecture order, undated notes after them.
+const lectureOrder = sql`${notes.lectureDate} ASC NULLS LAST`;
 
 function uniqueName(used: Set<string>, base: string, ext: string) {
   let name = `${base}${ext}`;
@@ -169,7 +173,7 @@ export function streamModuleZip(ctx: AppContext, res: Response, userId: string, 
     .select()
     .from(notes)
     .where(and(eq(notes.userId, userId), eq(notes.moduleId, module.id), isNull(notes.deletedAt)))
-    .orderBy(notes.lectureDate)
+    .orderBy(lectureOrder)
     .all();
   const bundles = collectBundles(ctx, userId, rows);
   const root = slugify(module.code ? `${module.code}-${module.name}` : module.name, 'module');
@@ -199,7 +203,7 @@ export function streamFullExport(ctx: AppContext, res: Response, userId: string,
     .select()
     .from(notes)
     .where(and(eq(notes.userId, userId), isNull(notes.deletedAt)))
-    .orderBy(notes.lectureDate)
+    .orderBy(lectureOrder)
     .all();
   const mods = ctx.db.select().from(modules).where(eq(modules.userId, userId)).all();
   const bundles = collectBundles(ctx, userId, rows);

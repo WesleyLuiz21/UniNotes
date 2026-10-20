@@ -52,7 +52,8 @@ export interface NoteSummary {
   excerpt: string;
   moduleId: string | null;
   module: ModuleRef | null;
-  lectureDate: string;
+  /** null = undated (not shown in the calendar). */
+  lectureDate: string | null;
   isFavourite: boolean;
   revision: number;
   tags: string[];

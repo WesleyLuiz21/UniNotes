@@ -65,4 +65,31 @@ describe('CalendarPage', () => {
     expect(week.children).toHaveLength(7);
     void within;
   });
+
+  it('never places undated notes on a day in the week view', async () => {
+    const undated = { ...note, id: 'n2', title: 'Undated reading', lectureDate: null };
+    mockApi((url) => {
+      if (url.pathname === '/api/calendar') return { body: [{ date: '2024-03-12', count: 1, modules: [] }] };
+      if (url.pathname === '/api/modules') return { body: [] };
+      // Even if an undated note reached the client, it must not be shown under any date.
+      if (url.pathname === '/api/notes') return { body: [note, undated] };
+    });
+    renderRoutes(
+      [
+        {
+          path: '/calendar',
+          element: (
+            <PageMetaProvider>
+              <CalendarPage />
+            </PageMetaProvider>
+          ),
+        },
+      ],
+      ['/calendar?date=2024-03-12'],
+    );
+    await userEvent.click(await screen.findByRole('radio', { name: 'Week' }));
+    const week = await screen.findByRole('list', { name: /Week of/ });
+    expect(await within(week).findByText('Graph theory')).toBeInTheDocument();
+    expect(within(week).queryByText('Undated reading')).not.toBeInTheDocument();
+  });
 });

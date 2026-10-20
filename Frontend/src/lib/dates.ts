@@ -5,7 +5,8 @@ export const parseDateOnly = (value: string) => parseISO(value);
 export const toDateOnly = (d: Date) => format(d, 'yyyy-MM-dd');
 export const todayDateOnly = () => toDateOnly(new Date());
 
-export function formatLectureDate(value: string, style: 'short' | 'long' = 'short') {
+export function formatLectureDate(value: string | null, style: 'short' | 'long' = 'short') {
+  if (!value) return 'Undated';
   const d = parseDateOnly(value);
   if (style === 'long') return format(d, 'EEEE d MMMM yyyy');
   return format(d, 'd MMM yyyy');

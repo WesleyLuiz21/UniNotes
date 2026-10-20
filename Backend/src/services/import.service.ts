@@ -11,7 +11,7 @@ const ALLOWED_EXT = new Set(['.md', '.markdown', '.txt']);
 export interface ImportInput {
   file: { buffer: Buffer; originalname: string };
   moduleId: string | null;
-  lectureDate: string;
+  lectureDate: string | null;
   title?: string;
   tags: string[];
   allowDuplicate: boolean;

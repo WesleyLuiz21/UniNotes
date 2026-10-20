@@ -45,8 +45,8 @@ export function AttachmentsPanel({
           </Button>
         </div>
         <p className="text-muted-foreground mb-2 text-xs">
-          Images (PNG, JPEG, WebP) and PDF lecture materials. You can also paste or drop images into the
-          editor.
+          Images (PNG, JPEG, WebP), PDF lecture materials and source code (.c .h .py .js .ts .html, downloaded
+          as text). You can also paste or drop images into the editor.
         </p>
         {isLoading && <Spinner />}
         {!noteId || data?.length === 0 ? (

@@ -34,7 +34,7 @@ const NoteSchema = z.object({
   module: z
     .object({ id: z.string(), name: z.string(), code: z.string().nullable(), color: z.string() })
     .nullable(),
-  lectureDate: z.string(),
+  lectureDate: z.string().nullable(),
   isFavourite: z.boolean(),
   revision: z.number(),
   tags: z.array(z.string()),
@@ -48,7 +48,8 @@ const CreateBody = z.object({
   title: TitleSchema.default(''),
   markdownContent: MarkdownSchema.default(''),
   moduleId: z.uuid().nullable().default(null),
-  lectureDate: dateOnly,
+  // null = undated (kept out of the calendar).
+  lectureDate: dateOnly.nullable(),
   tags: TagListSchema.default([]),
   isFavourite: z.boolean().default(false),
 });
@@ -59,7 +60,7 @@ const PatchBody = z
     title: TitleSchema.optional(),
     markdownContent: MarkdownSchema.optional(),
     moduleId: z.uuid().nullable().optional(),
-    lectureDate: dateOnly.optional(),
+    lectureDate: dateOnly.nullable().optional(),
     tags: TagListSchema.optional(),
     isFavourite: z.boolean().optional(),
   })

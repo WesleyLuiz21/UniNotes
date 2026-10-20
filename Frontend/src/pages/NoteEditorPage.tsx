@@ -125,7 +125,7 @@ function EditorSkeleton() {
 
 interface Meta {
   moduleId: string | null;
-  lectureDate: string;
+  lectureDate: string | null;
   tags: string[];
   isFavourite: boolean;
 }
@@ -152,7 +152,8 @@ function NoteEditor({
   const [content, setContent] = useState(initial?.markdownContent ?? '');
   const [meta, setMeta] = useState<Meta>({
     moduleId: initial ? initial.moduleId : defaults.moduleId,
-    lectureDate: initial?.lectureDate ?? defaults.lectureDate,
+    // An existing undated note stays undated; only new notes get the default date.
+    lectureDate: initial ? initial.lectureDate : defaults.lectureDate,
     tags: initial?.tags ?? [],
     isFavourite: initial?.isFavourite ?? false,
   });
@@ -437,10 +438,17 @@ function NoteEditor({
             id="note-date"
             type="date"
             className="h-8 w-auto text-[13px]"
-            value={meta.lectureDate}
-            title={`Lecture date: ${formatLectureDate(meta.lectureDate, 'long')}`}
-            onChange={(e) => DATE_RE.test(e.target.value) && changeMeta({ lectureDate: e.target.value })}
-            required
+            value={meta.lectureDate ?? ''}
+            title={
+              meta.lectureDate
+                ? `Lecture date: ${formatLectureDate(meta.lectureDate, 'long')}`
+                : 'Undated — choose a lecture date'
+            }
+            onChange={(e) => {
+              // Clearing the field makes the note undated.
+              if (e.target.value === '') changeMeta({ lectureDate: null });
+              else if (DATE_RE.test(e.target.value)) changeMeta({ lectureDate: e.target.value });
+            }}
           />
           <TagInput
             id="note-tags"
@@ -485,7 +493,7 @@ function NoteEditor({
         ref={fileInput}
         type="file"
         multiple
-        accept="image/png,image/jpeg,image/webp,application/pdf"
+        accept="image/png,image/jpeg,image/webp,application/pdf,.c,.h,.py,.js,.ts,.html"
         className="sr-only"
         aria-label="Upload image or PDF"
         tabIndex={-1}
