@@ -4,6 +4,9 @@
 !.env.example
 restic-repo/
 data/
+# Local stand-ins for /srv/UniNotes/{data,backups} when testing compose.existing-proxy.yaml
+.localdata/
+backups/
 *.db
 *.db-wal
 *.db-shm

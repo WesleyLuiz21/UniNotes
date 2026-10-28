@@ -30,12 +30,13 @@ COPY --chown=root:root package.json ./
 # The runtime never uses npm/npx/corepack/yarn: remove them (they bundle their own dependencies,
 # which show up in image CVE scans and only add attack surface).
 # Data directories are owned by the unprivileged runtime user; named volumes inherit this ownership.
+# No VOLUME instruction: compose mounts data explicitly, so a missing mount fails loudly (read-only
+# root filesystem) instead of silently writing to an anonymous volume.
 RUN rm -rf /usr/local/lib/node_modules /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /opt/yarn* /usr/local/bin/yarn* \
  && mkdir -p /data/db /data/attachments /data/backups \
  && chown -R node:node /data \
  && chmod 700 /data/db /data/attachments /data/backups
 USER node
-VOLUME ["/data/db", "/data/attachments", "/data/backups"]
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD ["node", "dist/scripts/healthcheck.js"]

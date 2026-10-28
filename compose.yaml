@@ -1,4 +1,10 @@
-# UniNotes — production stack. Run all commands from this directory.
+# UniNotes — SELF-CONTAINED stack with its own Caddy on ports 80/443 (for a server where nothing
+# else owns 80/443, or for local testing).
+#
+# !! NOT FOR THE PRODUCTION VPS. That host already runs Caddy as a systemd service for another
+# !! application; starting this file there would try to bind 80/443. On the VPS always use
+# !!   docker compose -f compose.existing-proxy.yaml ...   (via scripts/deploy.sh). See docs/DEPLOYMENT.md.
+#
 #   docker compose up -d --build            build and start everything
 #   docker compose up -d --build backend    rebuild/redeploy one service
 #   docker compose logs -f backend

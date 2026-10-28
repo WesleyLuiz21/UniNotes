@@ -79,3 +79,30 @@ jobs:
             docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy:0.67.2 image \
               --quiet --scanners vuln --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 $i
           done
+
+  # Production VPS deployment configuration (host Caddy + compose.existing-proxy.yaml).
+  deploy-config:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Shell scripts (shellcheck)
+        run: docker run --rm -v "$PWD":/mnt:ro -w /mnt koalaman/shellcheck:v0.10.0 -x -S warning -e SC1091 scripts/*.sh
+      - name: VPS compose file is isolated and loopback-only
+        env:
+          UNINOTES_ORIGIN: https://university.example.test
+          APP_SECRET_KEY: placeholder-for-rendering-only
+        run: |
+          docker compose -f compose.existing-proxy.yaml config --format json > /tmp/compose.json
+          python3 - <<'PY'
+          import json
+          c = json.load(open("/tmp/compose.json"))
+          assert c["name"] == "uninotes", c["name"]
+          assert set(c["services"]) == {"backend", "frontend"}, c["services"].keys()
+          assert not any(n.get("external") for n in c.get("networks", {}).values()), "external network"
+          for name, s in c["services"].items():
+              for p in s.get("ports", []):
+                  assert p.get("host_ip") == "127.0.0.1", f"{name} publishes {p}"
+          print("ok: project uninotes, backend+frontend only, loopback ports, no external networks")
+          PY
+      - name: Host Caddy site block validates
+        run: docker run --rm -v "$PWD/deploy:/d:ro" caddy:2.11-alpine sh -c 'mkdir -p /var/log/caddy && caddy validate --config /d/Caddyfile.university --adapter caddyfile'

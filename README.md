@@ -6,10 +6,11 @@ A private, self-hosted, Markdown-first notes app for university lectures. Organi
 |---|---|
 | **Frontend** | React 19, TypeScript, Vite, Tailwind CSS 4, shadcn-style components on Radix UI, TanStack Query, React Router, CodeMirror 6, react-markdown + GFM + KaTeX + Shiki + Mermaid |
 | **Backend** | Node.js 24 LTS, Express 5, TypeScript, SQLite (WAL) + FTS5, Drizzle ORM, Zod, Argon2id, server-side sessions, TOTP MFA |
-| **Infrastructure** | Docker Compose: `frontend`, `backend`, `caddy` (HTTPS reverse proxy), plus an on-demand `restic` container for encrypted offsite backups |
+| **Infrastructure** | Docker Compose: `frontend` + `backend` behind the VPS's host Caddy (`compose.existing-proxy.yaml`, production), or a self-contained stack with its own Caddy (`compose.yaml`); on-demand `restic` container for encrypted offsite backups |
 
 More documentation:
 
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md): **production deployment to the VPS** (architecture, first-deployment checklist, rollback)
 - [docs/SECURITY.md](docs/SECURITY.md): the security checklist, threat model, **pre-launch checklist** and penetration-test results
 - [docs/API.md](docs/API.md): the REST API guide. The full contract is in [Backend/openapi.json](Backend/openapi.json).
 - [docs/IMPLEMENTATION.md](docs/IMPLEMENTATION.md): architecture, design decisions and data policies
@@ -25,7 +26,7 @@ More documentation:
 5. [Environment variables](#environment-variables)
 6. [Account setup and recovery](#account-setup-and-recovery)
 7. [Database migrations](#database-migrations)
-8. [Reverse proxy options](#reverse-proxy-options)
+8. [Deployment modes](#deployment-modes)
 9. [Backups](#backups)
 10. [Restoring and disaster recovery](#restoring-and-disaster-recovery)
 11. [Updating UniNotes](#updating-uninotes)
@@ -47,9 +48,12 @@ UniNotes/
 │   ├── scripts/         CLI: migrate, create-user, reset-password, backup, restore, openapi
 │   ├── test/            Vitest + Supertest API tests
 │   └── openapi.json     generated API contract
-├── docker/Caddyfile     edge reverse proxy (HTTPS, routing /api → backend, / → frontend)
-├── scripts/             deploy.sh, backup.sh, restore.sh (host-side operations)
-├── compose.yaml         production stack
+├── deploy/              Caddyfile.university: site block for the VPS's host Caddy (+ apply/rollback guide)
+├── docker/              edge Caddy for the self-contained stack (compose.yaml only)
+├── scripts/             deploy, rollback, backup, restore, preflight, healthcheck, compose wrapper,
+│                        build-images/ship-images (off-box builds)
+├── compose.existing-proxy.yaml   PRODUCTION (VPS): backend + frontend on 127.0.0.1:3002/3003, project "uninotes"
+├── compose.yaml         self-contained stack with its own Caddy on 80/443 (NOT for the VPS)
 └── .env.example         configuration template (placeholders only)
 ```
 
@@ -116,7 +120,7 @@ cd Frontend && npx playwright install --with-deps chromium && npm run test:e2e
 To run the E2E suite against a running deployment (for example, to verify the production CSP):
 
 ```bash
-E2E_BASE_URL=https://notes.example.com E2E_USER=you E2E_PASSWORD='…' npx playwright test --project=desktop
+E2E_BASE_URL=https://university.wesleyldshub.dev E2E_USER=you E2E_PASSWORD='…' npx playwright test --project=desktop
 ```
 
 CI (`.github/workflows/ci.yml`) runs formatting, lint, typecheck, unit tests, the build, an OpenAPI drift check, `npm audit`, the E2E suite and both Docker builds.
@@ -125,57 +129,50 @@ CI (`.github/workflows/ci.yml`) runs formatting, lint, typecheck, unit tests, th
 
 ## Production deployment (VPS)
 
-**Requirements:** a Linux VPS with Docker Engine 24+ and the Compose plugin, and about 1 GB RAM. For automatic HTTPS you also need a domain whose DNS points at the server.
+**Full runbook and first-deployment checklist: [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md).**
+
+UniNotes runs on the same droplet as another application (Notes) behind the **host's systemd Caddy**. It uses `compose.existing-proxy.yaml`:
+- Compose project `uninotes`;
+- the backend on `127.0.0.1:3002` and the frontend on `127.0.0.1:3003`, loopback only;
+- data in bind mounts under `/srv/UniNotes/{data,backups}`.
+
+The host Caddy routes `university.wesleyldshub.dev` to it with [deploy/Caddyfile.university](deploy/Caddyfile.university).
 
 ```bash
-# 1. Get the code
-git clone <your-repo-url> UniNotes && cd UniNotes
-
-# 2. On a server that already runs other apps: read-only check of ports, proxies and names
-./scripts/preflight.sh         # changes nothing; tells you whether to use Option A, B or C
-
-# 3. Configure
-cp .env.example .env && chmod 600 .env
-openssl rand -base64 48        # paste the output as APP_SECRET_KEY in .env
-nano .env                      # set UNINOTES_ORIGIN, UNINOTES_SITE_ADDRESS, proxy mode, backups
-
-# 4. Build, migrate and start
-./scripts/deploy.sh
-
-# 5. Create your account (prompts for username, email and password)
-docker compose run --rm -it backend node dist/scripts/create-user.js
-
-# 6. Open UNINOTES_ORIGIN in a browser and sign in.
-#    Then enable two-factor authentication: Settings → Security.
-
-# 7. Schedule backups (see "Backups")
+cd /srv/UniNotes/app
+cp .env.example .env && chmod 600 .env    # set UNINOTES_ORIGIN and APP_SECRET_KEY (openssl rand -base64 48)
+./scripts/preflight.sh                    # read-only checks: DNS, ports, dirs, .env, compose isolation
+./scripts/deploy.sh                       # or --no-build with images built off-box (see the runbook)
+./scripts/healthcheck.sh
 ```
 
-`deploy.sh` validates `.env`, builds the images, takes a verified backup if a database already exists, applies migrations explicitly, starts the stack, and waits for health checks.
+All scripts use `docker compose -f compose.existing-proxy.yaml`. For ad-hoc commands use `./scripts/compose.sh <args>`, **never a bare `docker compose`**: that would pick `compose.yaml`, which starts a second Caddy on 80/443.
 
-### What runs where
+### What runs where (VPS)
 
 | Service | Image | Exposed | Notes |
 |---|---|---|---|
-| `caddy` | built from `docker/caddy/` (Caddy 2.11.7, patched Go) | 80/443 (configurable bind address and ports) | TLS, HSTS, routes `/api/*` → backend and everything else → frontend |
-| `frontend` | built from `Frontend/` | internal network only | static SPA on an unprivileged Caddy (port 8080), with CSP and security headers |
-| `backend` | built from `Backend/` | internal network only | Express API with embedded SQLite (no separate DB container) |
+| `backend` | built from `Backend/`, tag = git short SHA | `127.0.0.1:3002` → 3000 | Express API with embedded SQLite; runs as uid 1000 |
+| `frontend` | built from `Frontend/`, tag = git short SHA | `127.0.0.1:3003` → 8080 | static SPA on an unprivileged Caddy, with CSP and security headers |
 | `restic` | `restic/restic:0.18.1` | none | runs on demand (`tools` profile) |
 
-Hardening: multi-stage builds, non-root users, read-only root filesystems with tmpfs for scratch space, `cap_drop: ALL` (the edge Caddy keeps only `NET_BIND_SERVICE`), `no-new-privileges`, memory/CPU limits, health checks, `restart: unless-stopped`, log rotation, and no Docker socket mounts or privileged containers. The backend and frontend sit on an `internal: true` network with no route to the internet.
+**Hardening:**
+- multi-stage builds and non-root users;
+- read-only root filesystems with tmpfs for scratch space;
+- `cap_drop: ALL` and `no-new-privileges`;
+- memory and CPU limits (512 MiB / 64 MiB);
+- health checks, `restart: unless-stopped` and log rotation (10 MB × 3);
+- no Docker socket mounts and no privileged containers.
 
-### Persistent data
+### Persistent data (VPS)
 
-All state lives in named volumes prefixed with `COMPOSE_PROJECT_NAME` (default `uninotes`):
+| Host path | Container path | Contents |
+|---|---|---|
+| `/srv/UniNotes/data/db` | `/data/db` | SQLite database (`uninotes.db` plus WAL files) |
+| `/srv/UniNotes/data/attachments` | `/data/attachments` | uploaded images, PDFs and source files (opaque file names, private) |
+| `/srv/UniNotes/backups` | `/data/backups` | verified local snapshots, pre-migration and pre-restore copies |
 
-| Volume | Contents |
-|---|---|
-| `uninotes_db` | SQLite database (`/data/db/uninotes.db` plus WAL files) |
-| `uninotes_attachments` | uploaded images and PDFs (opaque filenames) |
-| `uninotes_backups` | verified local backup snapshots, pre-migration and pre-restore copies |
-| `uninotes_caddy_data` | TLS certificates and ACME account |
-
-`docker compose down`, `restart` and `up --build` never delete volumes. **Do not run `docker compose down -v`** unless you intend to destroy all data.
+The data lives outside the git checkout, so re-cloning or `git clean` can never touch it. Container restarts and redeploys never delete it.
 
 ---
 
@@ -185,20 +182,21 @@ Root `.env` (read by Docker Compose; full annotated template in [.env.example](.
 
 | Variable | Required | Description |
 |---|---|---|
-| `COMPOSE_PROJECT_NAME` | | Prefix for containers, volumes and networks (default `uninotes`). Change it to avoid clashes with other stacks. |
-| `UNINOTES_ORIGIN` | ✔ | Public URL, e.g. `https://notes.example.com`. Used for CSRF origin checks. |
+| `UNINOTES_ORIGIN` | ✔ | Public URL: `https://university.wesleyldshub.dev`. Used for CSRF origin checks. |
 | `APP_SECRET_KEY` | ✔ | 32+ random characters. Encrypts MFA secrets and keys recovery-code hashes. **Keep a copy in your password manager.** |
-| `UNINOTES_SITE_ADDRESS` | | Caddy site address: a domain (automatic HTTPS) or `:80` (behind another proxy). |
-| `UNINOTES_HTTP_BIND` / `UNINOTES_HTTP_PORT` | | Host bind address and port for HTTP (default `0.0.0.0:80`). |
-| `UNINOTES_HTTPS_BIND` / `UNINOTES_HTTPS_PORT` | | Host bind address and port for HTTPS (default `0.0.0.0:443`). |
-| `UNINOTES_TRUSTED_PROXIES` | | CIDRs whose `X-Forwarded-For` Caddy believes. Default `127.0.0.1/32` = nobody (correct when Caddy faces the internet). Widen only behind an existing proxy (Option B). |
+| `UNINOTES_COMPOSE_FILE` | | Compose file the scripts drive: `compose.existing-proxy.yaml` (default; the VPS) or `compose.yaml`. |
+| `UNINOTES_DATA_DIR` / `UNINOTES_BACKUP_DIR` / `UNINOTES_STATE_DIR` | | Host paths (default `/srv/UniNotes/data`, `/srv/UniNotes/backups`, `/srv/UniNotes`). |
+| `UNINOTES_BACKEND_HOST_PORT` / `UNINOTES_FRONTEND_HOST_PORT` | | Loopback ports for the host Caddy (default 3002 / 3003; 3001 belongs to Notes). |
+| `UNINOTES_EXPECTED_IP` | | IPv4 address the domain must resolve to (preflight check). |
+| `UNINOTES_BACKEND_MEM_LIMIT` / `UNINOTES_FRONTEND_MEM_LIMIT` | | Container memory limits (default 512m / 64m). |
+| `COMPOSE_PROJECT_NAME`, `UNINOTES_SITE_ADDRESS`, `UNINOTES_HTTP(S)_BIND/PORT`, `UNINOTES_TRUSTED_PROXIES` | | **`compose.yaml` only** (self-contained stack with its own Caddy). Unused on the VPS. |
 | `UNINOTES_COOKIE_SECURE` | | `true` (default). Only set `false` for plain-HTTP testing on a non-localhost host. |
 | `SESSION_IDLE_DAYS` / `SESSION_ABSOLUTE_DAYS` | | Session lifetimes (default 7 / 30). |
 | `MAX_IMAGE_MB` / `MAX_ATTACHMENT_MB` / `MAX_IMPORT_MB` | | Upload limits (default 10 / 25 / 2). |
 | `VERSION_RETENTION` | | Versions kept per note (default 100). |
 | `RECYCLE_BIN_RETENTION_DAYS` | | Auto-purge deleted notes after N days (default 0 = never). |
 | `LOG_LEVEL` | | `info` by default. |
-| `LOCAL_BACKUP_KEEP` | | Local snapshots to keep (default 7). |
+| `LOCAL_BACKUP_KEEP` | | Local snapshots to keep (default 14 on the VPS). |
 | `RESTIC_REPOSITORY`, `RESTIC_PASSWORD`, `AWS_*`, `B2_*` | | Offsite backup target and credentials. |
 | `RESTIC_KEEP_DAILY` / `_WEEKLY` / `_MONTHLY` | | Offsite retention (default 30 / 8 / 6). |
 | `BACKUP_NOTIFY_URL` | | Pinged on backup success; `<url>/fail` is pinged on failure. |
@@ -213,17 +211,17 @@ There is no public sign-up page and no password-reset endpoint. Accounts are man
 
 ```bash
 # Create the account (safe to re-run: it never modifies an existing account)
-docker compose run --rm -it backend node dist/scripts/create-user.js
+./scripts/compose.sh run --rm -it backend node dist/scripts/create-user.js
 
 # Non-interactive alternative
-printf '%s' "$PASSWORD" | docker compose run --rm -T backend node dist/scripts/create-user.js \
+printf '%s' "$PASSWORD" | ./scripts/compose.sh run --rm -T backend node dist/scripts/create-user.js \
   --username alice --email alice@example.com --display-name "Alice" --password-stdin
 
 # Forgotten password: sets a new password and signs out every session
-docker compose run --rm -it backend node dist/scripts/reset-password.js --username alice
+./scripts/compose.sh run --rm -it backend node dist/scripts/reset-password.js --username alice
 
 # Lost authenticator and no recovery codes: also disables MFA
-docker compose run --rm -it backend node dist/scripts/reset-password.js --username alice --disable-mfa
+./scripts/compose.sh run --rm -it backend node dist/scripts/reset-password.js --username alice --disable-mfa
 ```
 
 Passwords must be at least 12 characters and must not contain the username.
@@ -236,10 +234,10 @@ Migrations live in `Backend/drizzle/` and **never run automatically** when a con
 
 ```bash
 # Check status
-docker compose run --rm backend node dist/scripts/migrate.js --status
+./scripts/compose.sh run --rm backend node dist/scripts/migrate.js --status
 
 # Apply (deploy.sh does this for you, after a backup)
-docker compose run --rm backend node dist/scripts/migrate.js
+./scripts/compose.sh run --rm backend node dist/scripts/migrate.js
 ```
 
 `migrate.js` also takes its own pre-migration snapshot in `/data/backups/pre-migration/` and runs an integrity check afterwards.
@@ -248,86 +246,14 @@ docker compose run --rm backend node dist/scripts/migrate.js
 
 ---
 
-## Reverse proxy options
+## Deployment modes
 
-### Option A: bundled Caddy with automatic HTTPS (default)
+| Mode | Compose file | When |
+|---|---|---|
+| **Host reverse proxy** (production) | `compose.existing-proxy.yaml` | The VPS: the systemd Caddy owns 80/443 and also serves Notes. UniNotes publishes only `127.0.0.1:3002/3003`; add [deploy/Caddyfile.university](deploy/Caddyfile.university) to the host Caddy. See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md). |
+| Self-contained | `compose.yaml` | A server where nothing else uses 80/443 (or local testing). Its own Caddy obtains certificates automatically; set `UNINOTES_COMPOSE_FILE=compose.yaml`, `UNINOTES_SITE_ADDRESS=<domain>` and `COMPOSE_PROJECT_NAME`. **Never on the VPS.** |
 
-Requires ports 80 and 443 to be free and DNS pointing at the VPS.
-
-```dotenv
-UNINOTES_ORIGIN=https://notes.example.com
-UNINOTES_SITE_ADDRESS=notes.example.com
-```
-
-### Option B: an existing reverse proxy already owns 80/443
-
-UniNotes' Caddy listens on loopback only, in plain HTTP. Your existing proxy terminates TLS and forwards everything (both `/` and `/api`, unchanged) to it.
-
-```dotenv
-UNINOTES_ORIGIN=https://notes.example.com
-UNINOTES_SITE_ADDRESS=:80
-UNINOTES_HTTP_BIND=127.0.0.1
-UNINOTES_HTTP_PORT=8088
-UNINOTES_HTTPS_BIND=127.0.0.1
-UNINOTES_HTTPS_PORT=8443
-UNINOTES_TRUSTED_PROXIES=172.16.0.0/12
-```
-
-nginx example:
-
-```nginx
-server {
-    listen 443 ssl http2;
-    server_name notes.example.com;
-    # ssl_certificate … (your existing TLS setup)
-    client_max_body_size 40m;
-    location / {
-        proxy_pass http://127.0.0.1:8088;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto https;
-    }
-}
-```
-
-Existing Caddy: `notes.example.com { reverse_proxy 127.0.0.1:8088 }`. With Traefik, route the host to `http://127.0.0.1:8088` with a file-provider service.
-
-Option B requires the existing proxy to run **on the host** (installed with apt, for example). A proxy that runs in a **container** cannot reach the host's `127.0.0.1`; use Option C instead.
-
-### Option C: an existing *containerised* reverse proxy owns 80/443
-
-UniNotes publishes **no host ports**. Its Caddy joins the existing proxy's Docker network under the alias `<COMPOSE_PROJECT_NAME>-edge`, and you add one route for the UniNotes domain to that proxy. The other application's compose project, containers and volumes are not touched.
-
-```dotenv
-COMPOSE_FILE=compose.yaml:compose.existing-proxy.yaml
-UNINOTES_ORIGIN=https://notes.example.com
-UNINOTES_SITE_ADDRESS=:80
-UNINOTES_PROXY_NETWORK=<network of the existing proxy>      # docker network ls
-UNINOTES_TRUSTED_PROXIES=<subnet of that network>           # docker network inspect <name>
-```
-
-Route to add in the existing proxy (nginx example; the TLS settings are the ones it already uses):
-
-```nginx
-server {
-    listen 443 ssl; server_name notes.example.com;
-    client_max_body_size 40m;
-    location / {
-        resolver 127.0.0.11 valid=10s;
-        set $uninotes http://uninotes-edge:80;     # <COMPOSE_PROJECT_NAME>-edge
-        proxy_pass $uninotes;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto https;
-    }
-}
-```
-
-For Traefik, add labels to the `caddy` service in `compose.existing-proxy.yaml`: a router for your host, and a service on port 80.
-
-**Client IPs behind any proxy.** Caddy uses `trusted_proxies_strict`: it reads `X-Forwarded-For` right-to-left and skips only `UNINOTES_TRUSTED_PROXIES`. Visitors therefore cannot forge their IP, even when the outer proxy appends to the header. List *only* your proxy's address or network there.
-
-The UniNotes containers use project-prefixed names and their own networks, so they won't collide with other stacks. Nothing in this repository modifies existing proxy or Docker configuration.
+**Client IPs.** The backend trusts exactly one proxy hop (`TRUST_PROXY=1`). The host Caddy block replaces `X-Forwarded-For` with the real client IP (`header_up X-Forwarded-For {client_ip}`), so visitors cannot forge their address to get around the per-IP login limits.
 
 ---
 
@@ -348,11 +274,11 @@ The UniNotes containers use project-prefixed names and their own networks, so th
 ./scripts/backup.sh --check      # local + offsite + repository integrity check
 ```
 
-Schedule it with cron as the user that runs Docker:
+Schedule it with cron as `wesley` (who is in the `docker` group; no sudo needed):
 
 ```cron
-15 3 * * *  /opt/UniNotes/scripts/backup.sh >> /var/log/uninotes-backup.log 2>&1
-45 3 * * 0  /opt/UniNotes/scripts/backup.sh --check >> /var/log/uninotes-backup.log 2>&1
+17 3 * * *  /srv/UniNotes/app/scripts/backup.sh >> /srv/UniNotes/backups/backup.log 2>&1
+47 3 * * 0  /srv/UniNotes/app/scripts/backup.sh --check >> /srv/UniNotes/backups/backup.log 2>&1
 ```
 
 Backups contain the hashed password, hashed recovery codes and the **encrypted** MFA secret. They contain no plaintext credentials. The `.env` file (which holds `APP_SECRET_KEY` and `RESTIC_PASSWORD`) is deliberately **not** included. Store those two values in a password manager: without `RESTIC_PASSWORD` the offsite backups cannot be decrypted.
@@ -372,11 +298,11 @@ The restore process first verifies the backup, then stops the backend and preser
 
 ### Restoring onto a brand-new VPS
 
-1. Install Docker and the Compose plugin, then clone this repository.
+1. Install Docker and the Compose plugin, clone this repository to `/srv/UniNotes/app`, and create the data and backup directories ([docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) §4C).
 2. Recreate `.env` from your password manager with the **same `APP_SECRET_KEY`** and the same `RESTIC_*` settings. A different key still restores every note, but MFA then has to be reset with `reset-password.js --disable-mfa`.
 3. `./scripts/deploy.sh` (starts an empty instance).
 4. `./scripts/restore.sh restic:latest --yes`
-5. Point DNS at the new server and sign in.
+5. Point DNS at the new server, add the Caddy site block, and sign in.
 
 This exact procedure was rehearsed during development. A Docker stack's volumes were deleted, the stack was redeployed empty, then restored from restic. Note count, attachments, sign-in, full-text search and image serving were all confirmed afterwards.
 
@@ -385,29 +311,25 @@ This exact procedure was rehearsed during development. A Docker stack's volumes 
 ## Updating UniNotes
 
 ```bash
-cd /opt/UniNotes
-git pull
-./scripts/deploy.sh             # everything: backup → migrate → restart
-./scripts/deploy.sh frontend    # UI-only changes: no database impact
-./scripts/deploy.sh backend     # API changes: backup → migrate → restart backend
+cd /srv/UniNotes/app
+./scripts/deploy.sh --ref <tag-or-commit>             # build on the VPS (needs swap), or:
+./scripts/deploy.sh --ref <tag-or-commit> --no-build  # with images shipped from Codespaces
+./scripts/rollback.sh                                 # back to the previous release
 ```
 
-During a backend restart, the edge proxy retries requests for up to 15 seconds. Open browser tabs pick up a new frontend build on their next navigation; any unsaved editor content is retried by autosave.
+`deploy.sh` runs preflight, takes a backup before migrating, starts the new release, and health-checks it. If the release is unhealthy, it returns to the previous release automatically. During a backend restart the host Caddy retries API requests for up to 15 seconds. Open browser tabs pick up a new frontend on their next navigation; any unsaved editor content is retried by autosave.
 
 ---
 
 ## Day-to-day operations
 
 ```bash
-docker compose up -d --build              # build and start everything
-docker compose up -d --build frontend     # rebuild one service
-docker compose up -d --build backend      # (run migrations first if the schema changed)
-docker compose restart frontend
-docker compose restart backend
-docker compose logs -f frontend
-docker compose logs -f backend
-docker compose ps
-docker compose down                       # stops containers; data volumes are kept
+./scripts/healthcheck.sh                        # containers, local endpoints and the public URL
+./scripts/compose.sh ps
+./scripts/compose.sh logs -f --tail 100 backend
+./scripts/compose.sh logs -f frontend
+./scripts/compose.sh restart backend
+./scripts/compose.sh stop                       # stops containers; data on disk is kept
 ```
 
 Backend logs are structured JSON (pino). Passwords, cookies, CSRF tokens, codes and secrets are redacted.
@@ -422,11 +344,12 @@ Backend logs are structured JSON (pino). Passwords, cookies, CSRF tokens, codes 
 | `required variable … is missing` from Compose | Fill in `UNINOTES_ORIGIN` and `APP_SECRET_KEY` in `.env`. |
 | Sign-in works but every save returns 403 `CSRF_ORIGIN_MISMATCH` | `UNINOTES_ORIGIN` must exactly match the URL in the browser (scheme, host, port). |
 | Sign-in appears to succeed but you are immediately logged out | You are on plain HTTP over a non-localhost host while `UNINOTES_COOKIE_SECURE=true`. Use HTTPS. |
-| Caddy cannot obtain a certificate | Check DNS, make sure ports 80/443 are reachable, then `docker compose logs caddy`. Behind another proxy, use Option B. |
-| `bind: address already in use` on 80/443 | Another service owns those ports. Use Option B, or change `UNINOTES_HTTP(S)_PORT`. |
-| "Too many attempts" at sign-in | Wait 15 minutes. Limits are per IP and per account. Behind a proxy, set `UNINOTES_TRUSTED_PROXIES` so client IPs are seen correctly. |
+| Caddy cannot obtain a certificate | Check that the `university` A record resolves to the droplet (no AAAA), then `sudo journalctl -u caddy --since -10m`. |
+| `bind: address already in use` on 80/443 | You started `compose.yaml` on the VPS. Stop it, and use the scripts (which use `compose.existing-proxy.yaml`). |
+| 502 from `university.wesleyldshub.dev` | The containers are down or unhealthy: `./scripts/healthcheck.sh --local`, then `./scripts/compose.sh logs backend`. |
+| "Too many attempts" at sign-in | Wait 15 minutes. Limits are per IP and per account. |
 | Lost authenticator | Use a recovery code, or run `reset-password.js --disable-mfa` on the server. |
-| Upload rejected | Only PNG, JPEG, WebP and PDF are allowed, within the size limits. The file type is checked from the file's contents, not its name. |
+| Upload rejected | Allowed: PNG, JPEG, WebP, PDF, and source code (`.c .h .py .js .ts .html`, UTF-8 text, max 1 MB), within the size limits. The type is checked from the file's contents. Files over 30 MB are rejected by Caddy (413). |
 | A page shows "UniNotes was updated" | A new frontend was deployed while the tab was open. Reload. |
 | Containers cannot reach each other (`no upstreams available`, dial timeouts) | Usually a host firewall with `FORWARD DROP` blocking Docker bridges, which Docker normally manages. Check `iptables -S FORWARD` and any legacy tables (`iptables-legacy -S FORWARD`). |
-| Check health | `curl -s https://notes.example.com/api/health` returns `{"data":{"status":"ok","database":"ok"}}` |
+| Check health | `curl -s https://university.wesleyldshub.dev/api/health` returns `{"data":{"status":"ok","database":"ok"}}` |

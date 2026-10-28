@@ -1,29 +1,113 @@
-# Option C — run UniNotes behind an EXISTING containerised reverse proxy (Traefik, nginx,
-# nginx-proxy, Caddy…) that already owns ports 80/443 on this host.
+# UniNotes behind a reverse proxy that already runs ON THE HOST (production VPS:
+# university.wesleyldshub.dev behind the systemd Caddy that also serves notes.wesleyldshub.dev).
 #
-# UniNotes' Caddy publishes no host ports; instead it joins the existing proxy's Docker network
-# so that proxy can forward https://<your UniNotes domain> to http://uninotes-edge:80.
-# Nothing in the other application's compose project is modified.
+# This is a STANDALONE compose file. Always invoke it explicitly from the repository directory:
+#   docker compose -f compose.existing-proxy.yaml <command>
+# (the scripts in scripts/ do this for you). Do NOT combine it with compose.yaml, which starts its
+# own Caddy on ports 80/443 and must never be used on the VPS.
 #
-#   docker compose -f compose.yaml -f compose.existing-proxy.yaml up -d
-#   (or set COMPOSE_FILE=compose.yaml:compose.existing-proxy.yaml in .env so scripts use it too)
+# - Explicit project name "uninotes": never collides with the other app's implicit project "app".
+# - No proxy container and no external networks: the host Caddy reaches UniNotes on loopback only.
+#   Docker-published ports bypass ufw, so every port below is bound to 127.0.0.1.
+# - Data lives in host directories (bind mounts) outside the git checkout, owned by uid 1000.
+# - Images are tagged (UNINOTES_TAG, the git short SHA when deployed) so a rollback is a tag switch.
 #
-# .env for this mode:
-#   UNINOTES_SITE_ADDRESS=:80
-#   UNINOTES_PROXY_NETWORK=<name of the existing proxy's network, see `docker network ls`>
-#   UNINOTES_TRUSTED_PROXIES=<that network's subnet, see `docker network inspect <name>`>
-#   UNINOTES_ORIGIN=https://notes.example.com
-services:
-  caddy:
-    ports: !reset []
-    networks:
-      internal: {}
-      edge: {}
-      existing_proxy:
-        aliases:
-          - ${COMPOSE_PROJECT_NAME:-uninotes}-edge
+# Host Caddy routing (deploy/Caddyfile.university):
+#   /api/*  -> 127.0.0.1:${UNINOTES_BACKEND_HOST_PORT}   (prefix NOT stripped)
+#   else    -> 127.0.0.1:${UNINOTES_FRONTEND_HOST_PORT}
 
-networks:
-  existing_proxy:
-    external: true
-    name: ${UNINOTES_PROXY_NETWORK:?Set UNINOTES_PROXY_NETWORK to the existing proxy's Docker network}
+name: uninotes
+
+x-hardening: &hardening
+  read_only: true
+  security_opt:
+    - no-new-privileges:true
+  cap_drop:
+    - ALL
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  backend:
+    <<: *hardening
+    build:
+      context: ./Backend
+    image: uninotes-backend:${UNINOTES_TAG:-latest}
+    container_name: uninotes-backend
+    user: "1000:1000"
+    # Only the variables the backend needs (no env_file: .env may also hold backup credentials).
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /data
+      PORT: "3000"
+      APP_ORIGIN: ${UNINOTES_ORIGIN:?Set UNINOTES_ORIGIN in .env}
+      APP_SECRET_KEY: ${APP_SECRET_KEY:?Set APP_SECRET_KEY in .env}
+      COOKIE_SECURE: ${UNINOTES_COOKIE_SECURE:-true}
+      # Exactly one trusted hop: the host Caddy, which sets X-Forwarded-For to the real client IP.
+      TRUST_PROXY: "1"
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      SESSION_IDLE_DAYS: ${SESSION_IDLE_DAYS:-7}
+      SESSION_ABSOLUTE_DAYS: ${SESSION_ABSOLUTE_DAYS:-30}
+      MAX_IMAGE_MB: ${MAX_IMAGE_MB:-10}
+      MAX_ATTACHMENT_MB: ${MAX_ATTACHMENT_MB:-25}
+      MAX_IMPORT_MB: ${MAX_IMPORT_MB:-2}
+      VERSION_RETENTION: ${VERSION_RETENTION:-100}
+      RECYCLE_BIN_RETENTION_DAYS: ${RECYCLE_BIN_RETENTION_DAYS:-0}
+      LOCAL_BACKUP_KEEP: ${LOCAL_BACKUP_KEEP:-14}
+      MIGRATE_ON_START: "false"
+    volumes:
+      # Directories, not the .db file, so -wal/-shm live beside the database.
+      - ${UNINOTES_DATA_DIR:-/srv/UniNotes/data}/db:/data/db
+      - ${UNINOTES_DATA_DIR:-/srv/UniNotes/data}/attachments:/data/attachments
+      - ${UNINOTES_BACKUP_DIR:-/srv/UniNotes/backups}:/data/backups
+    tmpfs:
+      - /tmp:size=64m
+    ports:
+      - "127.0.0.1:${UNINOTES_BACKEND_HOST_PORT:-3002}:3000"
+    mem_limit: ${UNINOTES_BACKEND_MEM_LIMIT:-512m}
+    cpus: 1.0
+
+  frontend:
+    <<: *hardening
+    build:
+      context: ./Frontend
+    image: uninotes-frontend:${UNINOTES_TAG:-latest}
+    container_name: uninotes-frontend
+    tmpfs:
+      - /tmp:size=16m,uid=65534,gid=65534
+    ports:
+      - "127.0.0.1:${UNINOTES_FRONTEND_HOST_PORT:-3003}:8080"
+    depends_on:
+      backend:
+        condition: service_healthy
+    mem_limit: ${UNINOTES_FRONTEND_MEM_LIMIT:-64m}
+    cpus: 0.5
+
+  # Offsite encrypted backups (optional). Not started by `up`; used by scripts/backup.sh and restore.sh.
+  restic:
+    image: restic/restic:0.18.1
+    profiles: [tools]
+    entrypoint: ["restic"]
+    environment:
+      RESTIC_REPOSITORY: ${RESTIC_REPOSITORY:-}
+      RESTIC_PASSWORD: ${RESTIC_PASSWORD:-}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-}
+      B2_ACCOUNT_ID: ${B2_ACCOUNT_ID:-}
+      B2_ACCOUNT_KEY: ${B2_ACCOUNT_KEY:-}
+      RESTIC_CACHE_DIR: /cache
+    hostname: uninotes
+    volumes:
+      - ${UNINOTES_BACKUP_DIR:-/srv/UniNotes/backups}:/backups
+      - restic_cache:/cache
+      - ${RESTIC_LOCAL_REPO_DIR:-./restic-repo}:/repo
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  restic_cache:

@@ -158,7 +158,7 @@ The application cannot protect the server it runs on. Before pointing DNS at it:
 6. **Verify real client IPs:** after signing in, open Settings → Security. "Active sessions" must show *your* public IP, not a `172.x` Docker address. If it shows `172.x`, Docker is proxying connections in userspace (usually IPv6 without ip6tables): enable `"ip6tables": true` in `/etc/docker/daemon.json`, or disable IPv6 for the domain. Otherwise per-IP limits would treat all visitors as one.
 7. **TLS:** confirm `https://` works and `http://` redirects; optionally check with an SSL test service. HSTS is sent automatically.
 8. **Backups:** configure restic, run `./scripts/backup.sh --check` once by hand, and schedule it in cron with `BACKUP_NOTIFY_URL` so silent failures get noticed.
-9. **Monitoring:** watch `docker compose logs backend` for `auth.login.failure` bursts. Security events are also listed in Settings → Security.
+9. **Monitoring:** watch `./scripts/compose.sh logs backend` for `auth.login.failure` bursts. Security events are also listed in Settings → Security.
 
 Re-run the image vulnerability scan at any time:
 

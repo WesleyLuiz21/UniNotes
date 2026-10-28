@@ -5,7 +5,8 @@
 #   ./scripts/backup.sh --local    local backup only
 #   ./scripts/backup.sh --check    also run `restic check` (integrity of the offsite repository)
 #
-# Schedule daily via cron, e.g.:  15 3 * * * /opt/UniNotes/scripts/backup.sh >> /var/log/uninotes-backup.log 2>&1
+# Schedule daily via the wesley crontab (no sudo needed), e.g.:
+#   17 3 * * * /srv/UniNotes/app/scripts/backup.sh >> /srv/UniNotes/backups/backup.log 2>&1
 # Failures exit non-zero, are logged, and ping BACKUP_NOTIFY_URL/fail if configured.
 source "$(dirname "$0")/_common.sh"
 

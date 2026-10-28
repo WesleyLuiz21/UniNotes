@@ -1,5 +1,7 @@
 # UniNotes — Production Readiness & Security Audit
 
+> **Historical document (2026-10-18).** It audits the earlier self-contained design (bundled Caddy on 80/443, named volumes). The VPS now uses the host Caddy and `compose.existing-proxy.yaml`: see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) and [docs/UNINOTES_PRODUCTION_PREPARATION_REPORT.md](docs/UNINOTES_PRODUCTION_PREPARATION_REPORT.md).
+
 | | |
 |---|---|
 | **Date** | 2026-10-18 |

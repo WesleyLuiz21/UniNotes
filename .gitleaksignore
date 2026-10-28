@@ -1,3 +1,4 @@
 # Fixed, test-only keys used by the automated test suites (not real credentials).
 2441a9039af245e6e6ab89e7c8152f07abcc83ee:Backend/test/backup.test.ts:generic-api-key:21
 2441a9039af245e6e6ab89e7c8152f07abcc83ee:Backend/test/helpers.ts:generic-api-key:22
+5946cfd74512824800d44ee80edb780fb3bff85c:Backend/test/migrations.test.ts:generic-api-key:66

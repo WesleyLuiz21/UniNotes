@@ -1,0 +1,45 @@
+# UniNotes: https://university.wesleyldshub.dev
+#
+# Site block to APPEND to the host Caddy's /etc/caddy/Caddyfile (see deploy/README.md).
+# It does not alter any other site block (e.g. notes.wesleyldshub.dev). The UniNotes containers
+# listen on loopback only: backend 127.0.0.1:3002, frontend 127.0.0.1:3003.
+university.wesleyldshub.dev {
+	encode zstd gzip
+
+	# Largest upload (MAX_ATTACHMENT_MB=25 in .env) plus multipart overhead. Keep the two in sync.
+	request_body /api/* {
+		max_size 30MB
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		-Server
+		-Via
+	}
+
+	# Backend API. The /api prefix is NOT stripped: Express serves every route under /api.
+	handle /api/* {
+		reverse_proxy 127.0.0.1:3002 {
+			# Overwrite any client-supplied X-Forwarded-For with the real client IP. The backend
+			# trusts exactly one proxy hop (TRUST_PROXY=1) for per-IP login limits and audit logs.
+			header_up X-Forwarded-For {client_ip}
+			# Ride out a backend restart during a redeploy.
+			lb_try_duration 15s
+			lb_try_interval 500ms
+		}
+	}
+
+	# Frontend single-page app (it sets its own CSP and security headers).
+	handle {
+		reverse_proxy 127.0.0.1:3003 {
+			lb_try_duration 10s
+		}
+	}
+
+	log {
+		output file /var/log/caddy/university.access.log {
+			roll_size 10MiB
+			roll_keep 5
+		}
+	}
+}

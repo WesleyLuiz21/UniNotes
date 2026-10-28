@@ -23,7 +23,7 @@ if (status.pending.length > 0) {
   } else {
     logger.fatal(
       { pending: status.pending },
-      'Database has pending migrations. Back up, then run: docker compose run --rm backend node dist/scripts/migrate.js',
+      'Database has pending migrations. Run ./scripts/deploy.sh (it backs up first), or: ./scripts/compose.sh run --rm backend node dist/scripts/migrate.js',
     );
     process.exit(1);
   }
